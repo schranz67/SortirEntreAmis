@@ -1,3 +1,35 @@
-body {
-    background-color: skyblue;
+:root{
+    --blue-color:#3465A4;
+    --green-color:#069A2E;
+    --brown-color:#EA7500;
 }
+
+body {
+    /*background-color: skyblue;*/
+}
+
+.center {
+    text-align: center;
+}
+
+.font_ravie {
+    font-family: Ravie;
+}
+
+h1{
+    font-size: 1.6rem;
+}
+
+.blue{
+    color: var(--blue-color, blue);
+}
+
+.green{
+    color: var(--green-color, green);
+}
+
+.brown{
+    color: var(--brown-color, brown);
+}
+
+

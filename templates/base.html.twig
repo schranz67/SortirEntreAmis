@@ -5,6 +5,8 @@
         <title>{% block title %}Master Event!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ asset('styles/nav.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% block stylesheets %}
             {# -- Ici repose mon code CSS -- #}
             {# -- Par exemple Bootstrap CSS, etc, ... -- #}
@@ -14,12 +16,14 @@
         {#  {% block importmap %}{{ importmap('app') }}{% endblock %}{% endblock %}#}
     </head>
     <body>
-        <div class="container">
+        <div class="container d-flex flex-column min-vh-100">
             {# -- Chargement de mon header -- #}
             {%  include 'partials/_header.html.twig' %}
 
             {# -- Ici repose le contenu de ma page -- #}
-            {% block body %}{% endblock %}
+            <main class="flex-grow-1 container my-4">
+                {% block body %}{% endblock %}
+            </main>
 
             {# -- Chargement de mon footer -- #}
             {%  include 'partials/_footer.html.twig' %}
@@ -28,5 +32,7 @@
         {# -- Ici repose mon code JS -- #}
         {# -- Par exemple Bootstrap CSS, etc, ... -- #}
         {% block javascripts %}{% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('js/nav.js') }}"></script>
     </body>
 </html>

@@ -1,0 +1,34 @@
+.hr-high {
+    margin-bottom : 0;
+}
+
+.hr-bottom {
+    margin-top : 0;
+}
+
+.txt_mobile{
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .txt_mobile{
+        display: block;
+    }
+
+    .hide_mobile {
+        display: none;
+    }
+
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        width: 200px;
+        left: -120px;
+        padding: 10px;
+        background-color:  var(--brown-color, brown);
+        border-radius: 10px;
+        text-align: right;
+        z-index: 1000;
+    }
+}
