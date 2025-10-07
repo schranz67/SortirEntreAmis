@@ -6,16 +6,8 @@
     margin-top : 0;
 }
 
-.txt_mobile{
-    display: none;
-}
-
 /* Responsive */
 @media (max-width: 992px) {
-    .txt_mobile{
-        display: block;
-    }
-
     .hide_mobile {
         display: none;
     }

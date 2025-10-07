@@ -20,6 +20,10 @@ h1{
     font-size: 1.6rem;
 }
 
+.p_augm{
+    font-size: 1.2rem;
+}
+
 .blue{
     color: var(--blue-color, blue);
 }
@@ -30,6 +34,21 @@ h1{
 
 .brown{
     color: var(--brown-color, brown);
+}
+
+.txt_mobile{
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .txt_mobile {
+        display: block;
+    }
+
+    .txt_desktop {
+        display: none;
+    }
 }
 
 

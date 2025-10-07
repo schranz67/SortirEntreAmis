@@ -10,55 +10,31 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link txt_mobile active" aria-current="page" href="/">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link txt_mobile" href="/list">Liste des évènements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link txt_mobile" href="/detail">Création d'évènements</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link txt_mobile" href="/role">Gestion des rôles</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account">Création du compte</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Connexion</a>
-                    </li>
+                <ul class="navbar-nav txt_mobile">
+                    {%  include 'partials/_nav.html.twig' %}
+                    {%  include 'partials/_nav_account.html.twig' %}
+                </ul>
+                <ul class="navbar-nav txt_desktop">
+                    {%  include 'partials/_nav_account.html.twig' %}
                 </ul>
             </div>
         </div>
     </nav>
 </div>
+<hr class="border border-2 opacity-100 w-100 mt-0 mb-0">
 <nav class="navbar navbar-expand-lg">
-    <hr class="hr-high">
     <div class="container-fluid">
         <button class="navbar-toggler hide_mobile" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav2">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="/">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/list">Liste des évènements</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/detail">Création d'évènements</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/role">Gestion des rôles</a>
-                </li>
+            <ul class="navbar-nav fs-5">
+                {%  include 'partials/_nav.html.twig' %}
             </ul>
         </div>
     </div>
-    <hr class="hr-bottom">
 </nav>
+<hr class="border border-2 opacity-100 w-100 hide_mobile mt-0 mb-0">
 
 
 

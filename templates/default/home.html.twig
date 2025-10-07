@@ -1,17 +1,17 @@
 {#  Bloc hérité #}
 {% extends "base.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{% endblock %}
+
 {#  Ce bloc remplacera le bloc Title de Base#}
 {%  block title %}
     Accueil
 {% endblock %}
 
 {%  block body %}
-    <h1>
-        Accueil
-    </h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Cumque doloremque ex fugiat libero molestiae nobis obcaecati quam,
-        veritatis voluptas voluptate! Aliquam assumenda explicabo
-        hic id officiis omnis quasi soluta voluptas?</p>
+    <img src="{{ asset('images/CommuHaguenau.png') }}" alt="Communauté des communes de Haguenau" class="img_home">
+    {%  include 'partials/_event_list.html.twig' %}
 {% endblock %}

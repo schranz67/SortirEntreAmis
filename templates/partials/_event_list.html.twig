@@ -1,0 +1,41 @@
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Date</th>
+        <th>Sortie</th>
+        <th>Lieu</th>
+        <th>Catégorie</th>
+        <th class="text-end"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--{if}-->
+    <tr>
+        <td>Vendredi 10</td>
+    </tr>
+    <!--{foreach $categories as $category}-->
+    <tr>
+        <td>08:00</td>
+        <td>Piscine</td>
+        <td><a href="{{ path('App\\Controller\\EventController::detail_id', {'id': '1'}) }}">Médiathèque Haguenau</a></td>
+        <td>Culture</td>
+        <td class="row text-end">
+            <div class="d-flex justify-content-end gap-2">
+                <div class="col-md-auto">
+                    <a href="/index.php?controller=category&action=update&id={$category->getId()}" class="btn btn-sm btn-primary txt_desktop">Modifier</a>
+                </div>
+                <div class="col-md-auto">
+                    <a href="/index.php?controller=category&action=update&id={$category->getId()}" class="btn btn-sm btn-danger txt_desktop">Supprimer</a>
+                </div>
+                <div class="col-md-auto">
+                    <a href="/index.php?controller=category&action=update&id={$category->getId()}" class="btn btn-sm btn-success">S'inscrire</a>
+                </div>
+                <div class="col-md-auto">
+                    <a href="/index.php?controller=category&action=update&id={$category->getId()}" class="btn btn-sm btn-warning">Se désinscrire</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <!--{/foreach}-->
+    </tbody>
+</table>
