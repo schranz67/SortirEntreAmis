@@ -1,11 +1,13 @@
 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative d-flex justify-content-center align-items-center text-center p_augm">
-    <h2 class="mt-3 mb-auto fw-bold">Piscine<!--<?php echo htmlentities($objArticle->getTitle()); ?>--></h2>
-    <div class="mb-2 text-secondary">Culture<!--<?php echo $objArticle->getDateFormat(); ?> (<?php echo $objArticle->getAuthor(); ?>)--></div>
-    <div class="mb-2 text-dark">Vendredi 10 - 08:00</div>
-    <div class="mb-3 text-dark">Médiathèque Haguenau</div>
-    <img class="bd-placeholder-img mb-3 obj-fit-cover" alt="<?php echo $objArticle->getTitle();; ?>" src="{{ asset('images/CommuHaguenau.png') }}"> <!--assets/images/<?php echo $objArticle->getImg(); ?>-->
+    <h2 class="mt-3 mb-auto fw-bold">{{ event.title }}</h2>
+    <div class="mb-2 text-secondary">{{ event.category.name }}</div>
+    <div class="mb-2 text-dark">{{ event.start|date('l d F - H:i') }}</div>
+    <div class="mb-3 text-dark">{{ event.place.name }}</div>
+    {% if event.image %}
+        <img class="bd-placeholder-img mb-3 obj-fit-cover" alt="{{ event.title }}" src="assets/images/{{ event.image }}">
+    {% endif %}
     <p class="fw-bold mb-auto">Description complète</p>
-    <p class="mb-3 text-dark"><!--<?php echo htmlentities($objArticle->getSummary()); ?>-->Lorem ipsum  dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse  lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
+    <p class="mb-3 text-dark">{{ event.description }}</p>
     <div class="mb-3 fw-bold">Nombre d'inscrits : 12</div>
     <!--<?php
             if (isset($_SESSION['id']) && $_SESSION['id'] != '') {

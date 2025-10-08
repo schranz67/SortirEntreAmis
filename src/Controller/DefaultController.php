@@ -18,16 +18,9 @@ class DefaultController extends AbstractController
     public function home(EventRepository $eventRepository)
     {
         # Récupération des 3 derniers évènements
-        $events = $eventRepository->findBy([], [], 3);
-        var_dump($events);
-        return $this->render('default/home.html.twig');
-    }
-
-    #[Route('/404', name: 'app_error_404')]
-    public function error404(): Response
-    {
-        // On lance une exception 404
-        throw $this->createNotFoundException('Page non trouvée');
+        setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+        $events = $eventRepository->findBy([], ['start' => 'ASC'], 3);
+        return $this->render('default/home.html.twig', ['events' => $events]);
     }
 
 }

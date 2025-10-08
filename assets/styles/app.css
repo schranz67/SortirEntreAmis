@@ -2,10 +2,12 @@
     --blue-color:#3465A4;
     --green-color:#069A2E;
     --brown-color:#EA7500;
+
 }
 
 body {
     /*background-color: skyblue;*/
+    font-family: "Comic Sans MS";
 }
 
 .center {

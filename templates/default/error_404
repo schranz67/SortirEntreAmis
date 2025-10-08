@@ -1,9 +1,0 @@
-{% extends "base.html.twig" %}
-
-{%  block title %}
-    Erreur page 404
-{% endblock %}
-
-{%  block body %}
-    <h1>ERREUR PAGE 404</h1>
-{%  endblock %}

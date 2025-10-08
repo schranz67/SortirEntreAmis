@@ -5,19 +5,32 @@
 {% endblock %}
 
 {%  block body %}
-    <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': '1'}) }}"><i class="fas fa-arrow-alt-circle-left fs-2 mb-4"></i></a>
+    {% if eventIndex > 0 %}
+        <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': idPrec}) }}"><i class="fas fa-arrow-alt-circle-left fs-2 mb-4"></i></a>
+    {% else %}
+        <p class="fs-2 mb-2">&nbsp;</p> {# espace insécable pour conserver la hauteur #}
+    {% endif %}
     <div class="row g-3">
         <div class="col-lg-4 blue txt_desktop">
-            {%  include 'partials/_event_card.html.twig' %}
+            {% if eventIndex > 0 %}
+                {% set event = events[eventIndex-1] %}
+                {%  include 'partials/_event_card.html.twig' %}
+            {% endif %}
         </div>
         <div class="col-lg-4 green">
+            {% set event = events[eventIndex] %}
             {%  include 'partials/_event_card.html.twig' %}
         </div>
         <div class="col-lg-4 brown txt_desktop">
-            {%  include 'partials/_event_card.html.twig' %}
+            {% if eventIndex < (events|length - 1) %}
+                {% set event = events[eventIndex+1] %}
+                {%  include 'partials/_event_card.html.twig' %}
+            {% endif %}
         </div>
     </div>
     <div class="text-end">
-        <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': '1'}) }}"><i class="fas fa-arrow-alt-circle-right fs-2 "></i></a>
+        {% if eventIndex < (events|length - 1) %}
+            <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': idSuiv}) }}"><i class="fas fa-arrow-alt-circle-right fs-2 "></i></a>
+        {% endif %}
     </div>
 {%  endblock %}
