@@ -22,7 +22,7 @@ class UserController extends AbstractController
      * Page rôle
      * @return Template
      */
-    #[Route('/account', name: 'users_create_account', methods: ['GET'])]
+    #[Route('/create_account', name: 'users_create_account', methods: ['GET'])]
     public function create_account()
     {
         return $this->render('users/create_account.html.twig');
