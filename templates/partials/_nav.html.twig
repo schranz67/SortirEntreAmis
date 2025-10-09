@@ -3,14 +3,14 @@
 </li>
 {% if app.user %}
     <li class="nav-item">
-        <a class="nav-link" href="/list_events">Liste des évènements</a>
+        <a class="nav-link" href="/profile/list_events">Liste des évènements</a>
     </li>
     {% if is_granted('ROLE_ADMIN') %}
         <li class="nav-item">
-            <a class="nav-link" href="/add_edit_event">Création d'évènements</a>
+            <a class="nav-link" href="/admin/add_edit_event">Création d'évènements</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/role">Gestion des rôles</a>
+            <a class="nav-link" href="/admin/role">Gestion des rôles</a>
         </li>
     {% endif %}
 {% endif %}

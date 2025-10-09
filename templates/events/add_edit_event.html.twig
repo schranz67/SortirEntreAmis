@@ -5,6 +5,27 @@
 {% endblock %}
 
 {%  block body %}
-    <h1>AJOUT/EDITION</h1>
-    <p>ID : {{ id }}</p>
+    <div class="d-flex align-items-center justify-content-center py-4">
+        <div>
+            <h1 class="h3 mt-4 mb-4 font-weight-normal text-center">{{ texts.titre }} d'un évènement</h1>
+            <div>
+                {{ form_errors(form) }}
+                {{ form_start(form) }}
+            </div>
+            <div class="mb-2 w-100" >{{ form_row(form.title, {
+                    label: 'Titre', attr: { class: 'form-control w-100', autofocus: true } }) }}</div>
+            <div class="mb-2">{{ form_row(form.category, {
+                    label: 'Catégorie', attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(form.start, {
+                    label: 'Date', attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(form.place, {
+                    label: 'Lieu', attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(form.description, {
+                    label: 'Description', attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(form.imageFile, {
+                    label: 'Image', attr: { class: 'form-control w-100' } }) }}</div>
+            <button class="btn btn-primary w-100 py-2" type="submit">{{ texts.verb }} l'évènement</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {%  endblock %}

@@ -4,7 +4,7 @@
     <div class="mb-2 text-dark">{{ event.start|date('l d F - H:i') }}</div>
     <div class="mb-3 text-dark">{{ event.place.name }}</div>
     {% if event.image %}
-        <img class="bd-placeholder-img mb-3 obj-fit-cover" alt="{{ event.title }}" src="assets/images/{{ event.image }}">
+        <img class="bd-placeholder-img mb-3 obj-fit-cover" alt="{{ event.title }}" src="{{ asset('uploads/events_images/' ~ event.image) }}">
     {% endif %}
     <p class="fw-bold mb-auto">Description complète</p>
     <p class="mb-3 text-dark">{{ event.description }}</p>

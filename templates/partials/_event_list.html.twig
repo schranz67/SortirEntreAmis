@@ -1,4 +1,4 @@
-<table class="table table-striped">
+<table class="table table-striped mb-0">
     <thead class="table-dark">
     <tr>
         <th>Date</th>
@@ -19,7 +19,7 @@
         <tr>
             <td>{{ event.start|date('H:i') }}</td>
             {% if app.user %}
-                <td><a href="/detail_event/{{event.id}}">{{ event.title }}</a></td>
+                <td><a href="/profile/detail_event/{{event.id}}">{{ event.title }}</a></td>
             {% else %}
                 <td>{{ event.title }}</td>
             {% endif %}
@@ -30,7 +30,7 @@
                     <div class="d-flex justify-content-end gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                             <div class="col-md-auto">
-                                <a href="/add_edit_event/{{ event.id }}" class="btn btn-sm btn-primary txt_desktop">Modifier</a>
+                                <a href="/admin/add_edit_event/{{ event.id }}" class="btn btn-sm btn-primary txt_desktop">Modifier</a>
                             </div>
                             <div class="col-md-auto">
                                 <a href="/index.php?controller=category&action=update&id={$category->getId()}" class="btn btn-sm btn-danger txt_desktop">Supprimer</a>

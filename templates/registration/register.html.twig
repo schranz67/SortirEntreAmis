@@ -8,14 +8,18 @@
             <h1 class="h3 mt-4 mb-4 font-weight-normal">Création de votre compte !</h1>
             <div>
                 {{ form_errors(registrationForm) }}
-
                 {{ form_start(registrationForm) }}
             </div>
-            <div class="mb-4">{{ form_row(registrationForm.name, { label: 'Nom' }) }}</div>
-            <div class="mb-4">{{ form_row(registrationForm.firstname, { label: 'Prénom' }) }}</div>
-            <div class="mb-4">{{ form_row(registrationForm.email) }}</div>
-            <div class="mb-4">{{ form_row(registrationForm.plainPassword, { label: 'Mot de passe' }) }}</div>
-            <div class="mb-4">{{ form_row(registrationForm.agreeTerms, { label: 'Accord sur les termes' }) }}</div>
+            <div class="mb-2">{{ form_row(registrationForm.name, {
+                    label: 'Nom', attr: { class: 'form-control w-100', autofocus: true } }) }}</div>
+            <div class="mb-2">{{ form_row(registrationForm.firstname, {
+                    label: 'Prénom', attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(registrationForm.email, {
+                    attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(registrationForm.plainPassword, {
+                    label: 'Mot de passe', attr: { class: 'form-control w-100' } }) }}</div>
+            <div class="mb-2">{{ form_row(registrationForm.agreeTerms, {
+                    label: 'Accord sur les termes', label_attr: { class: 'me-2' } }) }}</div>
 
             <button class="btn btn-primary w-100 py-2" type="submit">Créer son compte</button>
             {{ form_end(registrationForm) }}
