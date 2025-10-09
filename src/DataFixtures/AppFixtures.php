@@ -8,9 +8,11 @@ use App\Entity\Place;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(private UserPasswordHasherInterface $hasher) {}
     public function load(ObjectManager $manager): void
     {
         # Création des catégories
@@ -35,12 +37,22 @@ class AppFixtures extends Fixture
         $place3->setName('Maison des sports');
         $manager->persist($place3);
 
-        # Création d'un utilisateur
+        # Création d'un administrateur et d'un utilisateur
+        $admin = new User();
+        $admin->setEmail('admin@gmail.com');
+        $admin->setRoles(['ROLE_ADMIN']);
+        $password = $this->hasher->hashPassword($admin, 'admin1234');
+        $admin->setPassword($password);
+        $admin->setName('admin');
+        $admin->setFirstname('admin');
+        $manager->persist($admin);
         $user = new User();
-        $user->setName('Admin');
-        $user->setMail('admin@gmail.com');
-        $user->setPassword(1234);
-        $user->setRole('ROLE_ADMIN');
+        $user->setEmail('user@gmail.com');
+        $user->setRoles(['ROLE_USER']);
+        $password = $this->hasher->hashPassword($user, 'user1234');
+        $user->setPassword($password);
+        $user->setName('user');
+        $user->setFirstname('user');
         $manager->persist($user);
 
         # Création de 5 évènements
@@ -83,7 +95,7 @@ class AppFixtures extends Fixture
 
         foreach ($events as $event) {
             $event->setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.');
-            $event->setOrganizer($user);
+            $event->setOrganizer($admin);
             $manager->persist($event);
         }
 

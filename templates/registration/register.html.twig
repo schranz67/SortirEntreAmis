@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'un compte{% endblock %}
+
+{% block body %}
+    <div class="d-flex align-items-center justify-content-center py-4">
+        <div>
+            <h1 class="h3 mt-4 mb-4 font-weight-normal">Création de votre compte !</h1>
+            <div>
+                {{ form_errors(registrationForm) }}
+
+                {{ form_start(registrationForm) }}
+            </div>
+            <div class="mb-4">{{ form_row(registrationForm.name, { label: 'Nom' }) }}</div>
+            <div class="mb-4">{{ form_row(registrationForm.firstname, { label: 'Prénom' }) }}</div>
+            <div class="mb-4">{{ form_row(registrationForm.email) }}</div>
+            <div class="mb-4">{{ form_row(registrationForm.plainPassword, { label: 'Mot de passe' }) }}</div>
+            <div class="mb-4">{{ form_row(registrationForm.agreeTerms, { label: 'Accord sur les termes' }) }}</div>
+
+            <button class="btn btn-primary w-100 py-2" type="submit">Créer son compte</button>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+{% endblock %}

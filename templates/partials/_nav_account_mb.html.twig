@@ -1,0 +1,15 @@
+{% if app.user %}
+    <li>
+        <a class="nav-link txt_display" href="/">Edition du compte</a>
+    </li>
+    <li>
+        <a class="nav-link txt_display" href="/logout">Déconnexion</a>
+    </li>
+{% else %}
+    <li>
+        <a class="nav-link txt_display" href="/register">Création du compte</a>
+    </li>
+    <li>
+        <a class="nav-link txt_display" href="/login">Connexion</a>
+    </li>
+{% endif %}

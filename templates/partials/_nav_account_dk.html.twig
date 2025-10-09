@@ -1,0 +1,25 @@
+{% if app.user %}
+    <li>
+        <a class="btn btn-sm" href="index.php?ctrl=user&action=edit_account" alt="Mon compte" title="Mon compte">
+            Bonjour {{ app.user.firstname }}
+        </a>
+    </li>
+    |
+    <li>
+        <a class="btn btn-sm" href="/logout" alt="Se déconnecter" title="Se déconnecter">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+    </li>
+{% else %}
+    <li>
+        <a class="btn btn-sm" href="/register" alt="Créer un compte" title="Créer un compte">
+            <i class="fas fa-user"></i>
+        </a>
+    </li>
+    |
+    <li>
+        <a class="btn btn-sm" href="/login" alt="Se connecter" title="Se connecter">
+            <i class="fas fa-sign-in-alt"></i>
+        </a>
+    </li>
+{% endif %}

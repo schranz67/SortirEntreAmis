@@ -12,15 +12,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav txt_mobile">
                     {%  include 'partials/_nav.html.twig' %}
-                    <li class="nav-item">
-                        <a class="nav-link txt_display" href="/create_account">Création du compte</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link txt_display" href="/login">Connexion</a>
-                    </li>
+                    {%  include 'partials/_nav_account_mb.html.twig' %}
                 </ul>
                 <ul class="navbar-nav txt_desktop">
-                    {%  include 'partials/_nav_account.html.twig' %}
+                    {%  include 'partials/_nav_account_dk.html.twig' %}
                 </ul>
             </div>
         </div>
