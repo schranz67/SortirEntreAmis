@@ -33,6 +33,11 @@ class EventController extends AbstractController
     {
         # Récupération des 3 derniers évènements
         $events = $eventRepository->findBy([], ['start' => 'ASC'], );
+        # Récupération des inscriptions liées
+        #foreach ($events as $event) {
+            #$registrations[]= $event->getRegistrations();
+        #}
+
         return $this->render('events/list_events.html.twig', ['events' => $events]);
     }
 
@@ -159,7 +164,7 @@ class EventController extends AbstractController
      * @return Template
      */
     #[Route('/admin/delete_event/{id}', name: 'event_delete')]
-    public function delete($id, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger)
+    public function delete($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
         // Récupération de l'évènement
         $event = $eventRepository->find($id);
@@ -169,6 +174,50 @@ class EventController extends AbstractController
             $entityManager->remove($event);
             $entityManager->flush();
         }
+
+        // Redirection vers la liste des évènements
+        return $this->redirectToRoute('events_list');
+    }
+
+    /**
+     * Inscription à l'évènement
+     * @return Template
+     */
+    #[Route('/profile/register_event/{id}', name: 'event_register')]
+    public function register_event($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
+    {
+        // Récupération de l'évènement
+        $event = $eventRepository->find($id);
+
+        // Liaison de l'évènement à l'utilisateur
+        $user = $this->getUser();
+        $event->addUser($user);
+
+        // Ajout de l'inscription en base de données
+        $entityManager->persist($event);
+        $entityManager->flush();
+
+        // Redirection vers la liste des évènements
+        return $this->redirectToRoute('events_list');
+    }
+
+    /**
+     * Désinscription à l'évènement
+     * @return Template
+     */
+    #[Route('/profile/unregister_event/{id}', name: 'event_unregister')]
+    public function unregister_event($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
+    {
+        // Récupération de l'évènement
+        $event = $eventRepository->find($id);
+
+        // Liaison de l'évènement à l'utilisateur
+        $user = $this->getUser();
+        $event->removeUser($user);
+
+        // Suppression de l'inscription en base de données
+        $entityManager->persist($event);
+        $entityManager->flush();
 
         // Redirection vers la liste des évènements
         return $this->redirectToRoute('events_list');
