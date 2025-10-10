@@ -33,7 +33,7 @@
                                 <a href="/admin/add_edit_event/{{ event.id }}" class="btn btn-sm btn-primary txt_desktop">Modifier</a>
                             </div>
                             <div class="col-md-auto">
-                                <a href="/index.php?controller=category&action=update&id={$category->getId()}" class="btn btn-sm btn-danger txt_desktop">Supprimer</a>
+                                <a  href="/admin/delete_event/{{ event.id }}" class="btn btn-sm btn-danger txt_desktop delete_event">Supprimer</a>
                             </div>
                         {% endif %}
                         <div class="col-md-auto">

@@ -153,4 +153,24 @@ class EventController extends AbstractController
         return $this->render('events/add_edit_event.html.twig', ['form' => $form, 'texts' => $texts]);
     }
 
+
+    /**
+     * Suppression de l'évènement
+     * @return Template
+     */
+    #[Route('/admin/delete_event/{id}', name: 'event_delete')]
+    public function delete($id, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger)
+    {
+        // Récupération de l'évènement
+        $event = $eventRepository->find($id);
+
+        // Suppression de l'évènement
+        if ($event) {
+            $entityManager->remove($event);
+            $entityManager->flush();
+        }
+
+        // Redirection vers la liste des évènements
+        return $this->redirectToRoute('events_list');
+    }
 }
