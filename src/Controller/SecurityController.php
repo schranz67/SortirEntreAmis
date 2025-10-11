@@ -9,6 +9,13 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * Connexion d'un utilisateur
+     *
+     * @param AuthenticationUtils $authenticationUtils
+     * @return $security
+     *
+     */
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -24,9 +31,14 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * Déconnexion d'un utilisateur
+     *
+     * @return $security
+     */
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new \LogicException('Cette méthode peut être vide - elle sera interceptée par la clé de déconnexion sur votre pare-feu.');
     }
 }

@@ -9,7 +9,8 @@ use Twig\Template;
 class UserController extends AbstractController
 {
     /**
-     * Page rôle
+     * Page de gestion des rôles -- EN CONSTRUCTION --
+     *
      * @return Template
      */
     #[Route('/admin/role', name: 'users_role', methods: ['GET'])]

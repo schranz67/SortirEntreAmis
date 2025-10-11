@@ -6,6 +6,7 @@
 
 ## Prérequis
 Avant d’installer l'application, assurez-vous d’avoir :
+- MySQL v9.1.0
 - PHP >= 8.x
 - Composer
 - WAMP ou tout autre serveur local (Apache + MySQL)

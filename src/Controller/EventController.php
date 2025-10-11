@@ -17,7 +17,10 @@ use Twig\Template;
 class EventController extends AbstractController
 {
     /**
-     * Page liste
+     * Page de liste des évènements
+     *
+     * @param EventRepository $eventRepository
+     *
      * @return Template
      */
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
@@ -26,28 +29,31 @@ class EventController extends AbstractController
         # Récupération de tous les évènements
         $events = $eventRepository->findBy([], ['start' => 'ASC'], );
 
-        # Récupération des inscriptions liées
-        $regisrations=[];
+        # Récupération des inscriptions liées à chaque évènement
+        $registrations=[];
         foreach ($events as $event) {
-            $users = $event->getUser();
-            foreach ($users as $user) {
-                $regisrations[$event->getId()][] = $user->getId();
-            }
+            $registrations[$event->getId()] = $event->getRegistrations();
         }
 
-        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $regisrations,]);
+        # Rendu du template Twig avec les événements et les inscriptions
+        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $registrations,]);
     }
 
     /**
-     * Page detail
+     * Page de detail d'un évènement ainsi que le précédent et le suivant
+     *
+     * @param $id
+     * @param EventRepository $eventRepository
+     *
      * @return Template
      */
     #[Route('/profile/detail_event/{id}', name: 'events_detail_id', methods: ['GET'])]
     public function detail_id($id, EventRepository $eventRepository)          // public function detail_id($id)
     {
-        // Récupération de tous les évènements
+        # Récupération de tous les évènements
         $events = $eventRepository->findBy([], ['start' => 'ASC'], );
-        // Recherche de la ligne où se trouve l'évènement
+
+        # Recherche de l'index du tableau où se trouve l'évènement lié à l'id passé en paramètre
         $eventIndex = 0;
         foreach ($events as $index => $event) {
             if ($event->getId() === (int) $id) {
@@ -55,175 +61,168 @@ class EventController extends AbstractController
                 break;
             }
         }
-        // Comptage du nombre d'inscrits
+
+        # Comptage du nombre d'inscrits à l'évènement en cours
         $nbRegs[]=[0,0,0];
-        $nbRegs[1]=$events[$eventIndex]->getUser()->count();
-        // Récupération de l'ID précédent si existant
+        $nbRegs[1]=$events[$eventIndex]->countUsers();
+
+        # Récupération de l'ID précédent si existant et comptage du nombre d'inscrits à l'évènement précédent
         $idPrec=-1;
         if ($eventIndex>0){
             $idPrec = $events[$eventIndex-1]->getId();
-            $nbRegs[0]=$events[$eventIndex-1]->getUser()->count();
+            $nbRegs[0]=$events[$eventIndex-1]->countUsers();
         }
-        // Récupération de l'ID précédent si existant
+
+        # Récupération de l'id suivant si existant et comptage du nombre d'inscrits à l'évènement suivant
         $idSuiv=-1;
         if ($eventIndex<count($events)-1){
             $idSuiv = $events[$eventIndex+1]->getId();
-            $nbRegs[2]=$events[$eventIndex+1]->getUser()->count();
+            $nbRegs[2]=$events[$eventIndex+1]->countUsers();
         }
+
+        # Rendu du template Twig avec toutes les informations nécessaires
         return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'nbRegs' => $nbRegs, 'idPrec' => $idPrec, 'id' => $id, 'idSuiv' => $idSuiv,'events' => $events]);
     }
 
     /**
-     * Page création
-     * @return Template
+     * Pages de création et d'édition d'un évènement
+     *
+     * @param int|null $id
+     * @param EventRepository $eventRepository
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param SluggerInterface $slugger
+     *
+ * @return Template
      */
-    #[Route('/admin/add_edit_event', name: 'event_create')]
-    public function create_event(Request $request, EntityManagerInterface $entityManager,  SluggerInterface $slugger)
+    #[Route('/admin/add_edit_event', name: 'event_create', methods: ['GET', 'POST'])]
+    #[Route('/admin/add_edit_event/{id}', name: 'event_add', methods: ['GET', 'POST'])]
+    public function create_event(?int $id = null, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager,  SluggerInterface $slugger)
     {
-        // Préparation du nouvel objet Event
-        $event = new Event();
-        $event->setOrganizer($this->getUser());
+        # Récupération de l'évènement si présence d'un id
+        if ($id) {
+            $event = $eventRepository->find($id);
+            $texts['titre'] = "Modification";
+            $texts['verb'] = "Modifier";
+        }
+        # Préparation du nouvel objet Event en affectant l'identifiant de l'organisateur si absence d'un id
+        else{
+            $event = new Event();
+            $event->setOrganizer($this->getUser());
+            $texts['titre'] = "Création";
+            $texts['verb'] = "Créer";
+        }
 
-        // Création du formulaire
+        # Création du formulaire
         $form = $this->createForm(AddEditEventFormType::class, $event);
         $form->handleRequest($request);
-        $texts['titre'] = "Création";
-        $texts['verb'] = "Créer";
 
+        # Vérification que le formulaire a été soumis et est valide pour traitement des données
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupération des données du formulaire);
+            # Récupération des données du formulaire;
             $event = $form->getData();
-            // Récupération de l'image
+            # Récupération de l'image
             $uploadedFile = $form['imageFile']->getData();
             if ($uploadedFile) {
                 $destination = $this->getParameter('kernel.project_dir') . '/public/uploads/events_images';
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $slugger->slug($originalFilename) . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
-                // Déplacement du fichier vers le dossier défini
+                # Déplacement du fichier vers le dossier défini
                 $uploadedFile->move($destination, $newFilename);
-                // Sauvegarde du nom du fichier
+                # Sauvegarde du nom du fichier
                 $event->setImage($newFilename);
             }
 
-            // Envoi du nouvel évènement en base de données
+            # Envoi du nouvel évènement en base de données
             $entityManager->persist($event);
             $entityManager->flush();
 
-            // Redirection vers le détail de l'évènement
+            # Renvoi vers le détail du nouvel évènement
             return $this->redirectToRoute('events_detail_id', ['id' => $event->getId(),]);
         }
 
-        // Renvoi vers le formulaire
+        # Rendu du template Twig de l'édition d'un évènement
         return $this->render('events/add_edit_event.html.twig', ['form' => $form, 'texts' => $texts]);
     }
-
-    /**
-     * Page d'édition
-     * @return Template
-     */
-    #[Route('/admin/add_edit_event/{id}', name: 'event_add')]
-    public function edit_event($id, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger)
-    {
-        // Récupération de l'évènement
-        $event = $eventRepository->find($id);
-
-        // Création du formulaire
-        $form = $this->createForm(AddEditEventFormType::class, $event);
-        $form->handleRequest($request);
-        $texts['titre'] = "Modification";
-        $texts['verb'] = "Modifier";
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Récupération des données du formulaire
-            $event = $form->getData();
-            // Récupération de l'image
-            $uploadedFile = $form['imageFile']->getData();
-            if ($uploadedFile) {
-                $destination = $this->getParameter('kernel.project_dir') . '/public/uploads/events_images';
-                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $slugger->slug($originalFilename) . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
-                // Déplacement du fichier vers le dossier défini
-                $uploadedFile->move($destination, $newFilename);
-                // Sauvegarde du nom du fichier
-                $event->setImage($newFilename);
-            }
-
-            // Envoi de l'évènement modifié en base de données
-            $entityManager->persist($event);
-            $entityManager->flush();
-
-            // Redirection vers le détail de l'évènement
-            return $this->redirectToRoute('events_detail_id', ['id' => $event->getId(),]);
-        }
-
-        // Renvoi vers le formulaire
-        return $this->render('events/add_edit_event.html.twig', ['form' => $form, 'texts' => $texts]);
-    }
-
 
     /**
      * Suppression de l'évènement
+     *
+     * @param int $id
+     * @param EventRepository $eventRepository
+     * @param EntityManagerInterface $entityManager
+     *
      * @return Template
      */
     #[Route('/admin/delete_event/{id}', name: 'event_delete')]
     public function delete($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
-        // Récupération de l'évènement
+        # Récupération de l'évènement
         $event = $eventRepository->find($id);
 
-        // Suppression de l'évènement
+        # Suppression de l'évènement
         if ($event) {
             $entityManager->remove($event);
             $entityManager->flush();
         }
 
-        // Redirection vers la liste des évènements
+        # Redirection vers la liste des évènements
         return $this->redirectToRoute('events_list');
     }
 
     /**
      * Inscription à l'évènement
+     *
+     * @param int $id
+     * @param EventRepository $eventRepository
+     * @param EntityManagerInterface $entityManager
+     *
      * @return Template
      */
     #[Route('/profile/register_event/{id}', name: 'event_register')]
     public function register_event($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
-        // Récupération de l'évènement
+        # Récupération de l'évènement
         $event = $eventRepository->find($id);
 
-        // Liaison de l'évènement à l'utilisateur
+        # Liaison de l'évènement à l'utilisateur
         $event->addUser($this->getUser());
 
-        // Ajout de l'inscription en base de données
+        # Ajout de l'inscription en base de données
         $entityManager->persist($event);
         $entityManager->flush();
 
-        // Ajout du message flash
+        # Ajout du message flash de confirmation
         $this->addFlash('success', 'Votre inscription a bien été prise en compte !');
 
-        // Redirection vers la liste des évènements
+        # Redirection vers le détail de l'évènement
         return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
     }
 
     /**
      * Désinscription à l'évènement
+     *
+     * @param int $id
+     * @param EventRepository $eventRepository
+     * @param EntityManagerInterface $entityManager
+     *
      * @return Template
      */
     #[Route('/profile/unregister_event/{id}', name: 'event_unregister')]
     public function unregister_event($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
-        // Récupération de l'évènement
+        # Récupération de l'évènement
         $event = $eventRepository->find($id);
 
-        // Liaison de l'évènement à l'utilisateur
+        # Liaison de l'évènement à l'utilisateur
         $user = $this->getUser();
         $event->removeUser($user);
 
-        // Suppression de l'inscription en base de données
+        # Suppression de l'inscription en base de données
         $entityManager->persist($event);
         $entityManager->flush();
 
-        // Redirection vers la liste des évènements
+        # Redirection vers la liste des évènements
         return $this->redirectToRoute('events_list');
     }
 }

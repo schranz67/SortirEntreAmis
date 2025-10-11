@@ -164,4 +164,20 @@ class Event
         return $this;
     }
 
+    # Comptage du nombre d'utilisateurs
+    public function countUsers(): int
+    {
+        return $this->user->count();
+    }
+
+    # Récupération des inscriptions de l'évènement
+    public function getRegistrations(): array
+    {
+        $registrations=[];
+        $users = $this->getUser();
+        foreach ($users as $user) {
+            $registrations[] = $user->getId();
+        }
+        return $registrations;
+    }
 }
