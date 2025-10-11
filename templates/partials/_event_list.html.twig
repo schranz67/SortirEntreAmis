@@ -13,7 +13,7 @@
     {% for event in events %}
         {% if event.start|date('d/m/Y') != dateEvent %}
             <tr>
-                <td colspan="4"><strong>{{ event.start|date('l d F') }}</strong></td>
+                <td colspan="7" class="bg-info"><strong>{{ event.start|date('l d F') }}</strong></td>
             </tr>
         {% endif %}
         <tr>
@@ -30,18 +30,25 @@
                     <div class="d-flex justify-content-end gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                             <div class="col-md-auto">
-                                <a href="/admin/add_edit_event/{{ event.id }}" class="btn btn-sm btn-primary txt_desktop">Modifier</a>
+                                <a href="/admin/add_edit_event/{{ event.id }}" class="btn btn-sm btn-primary btn_w txt_desktop">Modifier</a>
                             </div>
                             <div class="col-md-auto">
-                                <a href="/admin/delete_event/{{ event.id }}" class="btn btn-sm btn-danger txt_desktop delete_event">Supprimer</a>
+                                <a href="/admin/delete_event/{{ event.id }}" class="btn btn-sm btn-danger btn_w txt_desktop delete_event">Supprimer</a>
                             </div>
                         {% endif %}
-                        <div class="col-md-auto">
-                            <a href="/profile/register_event/{{ event.id }}" class="btn btn-sm btn-success">S'inscrire</a>
-                        </div>
-                        <div class="col-md-auto">
-                            <a href="/profile/unregister_event/{{ event.id }}" class="btn btn-sm btn-warning">Se désinscrire</a>
-                        </div>
+                        {% if app.user.id != event.organizer.id %}
+                            {% if app.user.id not in registrations[event.id]|default([]) %}
+                                <div class="col-md-auto">
+                                    <a href="/profile/register_event/{{ event.id }}" class="btn btn-sm btn-success btn_w confirm_register">S'inscrire</a>
+                                </div>
+                            {% else  %}
+                                <div class="col-md-auto">
+                                    <a href="/profile/unregister_event/{{ event.id }}" class="btn btn-sm btn-warning btn_w confirm_unregister">Se désinscrire</a>
+                                </div>
+                            {% endif %}
+                        {% else  %}
+                            <div class="col-md-auto" style="width: 120px;"></div>
+                        {%  endif %}
                     </div>
                 </td>
             {% endif %}

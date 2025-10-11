@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Category;
 use App\Entity\Event;
-use App\Entity\Place;
 use App\Form\AddEditEventFormType;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Twig\Template;
@@ -31,14 +23,19 @@ class EventController extends AbstractController
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
     public function list(EventRepository $eventRepository)
     {
-        # Récupération des 3 derniers évènements
+        # Récupération de tous les évènements
         $events = $eventRepository->findBy([], ['start' => 'ASC'], );
-        # Récupération des inscriptions liées
-        #foreach ($events as $event) {
-            #$registrations[]= $event->getRegistrations();
-        #}
 
-        return $this->render('events/list_events.html.twig', ['events' => $events]);
+        # Récupération des inscriptions liées
+        $regisrations=[];
+        foreach ($events as $event) {
+            $users = $event->getUser();
+            foreach ($users as $user) {
+                $regisrations[$event->getId()][] = $user->getId();
+            }
+        }
+
+        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $regisrations,]);
     }
 
     /**
@@ -58,17 +55,22 @@ class EventController extends AbstractController
                 break;
             }
         }
+        // Comptage du nombre d'inscrits
+        $nbRegs[]=[0,0,0];
+        $nbRegs[1]=$events[$eventIndex]->getUser()->count();
         // Récupération de l'ID précédent si existant
         $idPrec=-1;
         if ($eventIndex>0){
             $idPrec = $events[$eventIndex-1]->getId();
+            $nbRegs[0]=$events[$eventIndex-1]->getUser()->count();
         }
         // Récupération de l'ID précédent si existant
         $idSuiv=-1;
         if ($eventIndex<count($events)-1){
             $idSuiv = $events[$eventIndex+1]->getId();
+            $nbRegs[2]=$events[$eventIndex+1]->getUser()->count();
         }
-        return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'idPrec' => $idPrec, 'id' => $id, 'idSuiv' => $idSuiv,'events' => $events]);
+        return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'nbRegs' => $nbRegs, 'idPrec' => $idPrec, 'id' => $id, 'idSuiv' => $idSuiv,'events' => $events]);
     }
 
     /**
@@ -190,15 +192,17 @@ class EventController extends AbstractController
         $event = $eventRepository->find($id);
 
         // Liaison de l'évènement à l'utilisateur
-        $user = $this->getUser();
-        $event->addUser($user);
+        $event->addUser($this->getUser());
 
         // Ajout de l'inscription en base de données
         $entityManager->persist($event);
         $entityManager->flush();
 
+        // Ajout du message flash
+        $this->addFlash('success', 'Votre inscription a bien été prise en compte !');
+
         // Redirection vers la liste des évènements
-        return $this->redirectToRoute('events_list');
+        return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
     }
 
     /**

@@ -20,7 +20,17 @@ class DefaultController extends AbstractController
         # Récupération des 3 derniers évènements
         setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
         $events = $eventRepository->findBy([], ['start' => 'ASC'], 3);
-        return $this->render('default/home.html.twig', ['events' => $events]);
+
+        # Récupération des inscriptions liées
+        $regisrations=[];
+        foreach ($events as $event) {
+            $users = $event->getUser();
+            foreach ($users as $user) {
+                $regisrations[$event->getId()][] = $user->getId();
+            }
+        }
+
+        return $this->render('default/home.html.twig', ['events' => $events, 'registrations' => $regisrations]);
     }
 
 }

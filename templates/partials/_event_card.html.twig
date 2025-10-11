@@ -8,16 +8,6 @@
     {% endif %}
     <p class="fw-bold mb-auto">Description complète</p>
     <p class="mb-3 text-dark">{{ event.description }}</p>
-    <div class="mb-3 fw-bold">Nombre d'inscrits : 12</div>
-    <!--<?php
-            if (isset($_SESSION['id']) && $_SESSION['id'] != '') {
-        ?>
-    <p><a alt="Modifier un article"
-          href="index.php?ctrl=article&action=edit_article&id=<?php echo $objArticle->getId(); ?>">Modifier l'article</a></p>
-    <p><a alt="Supprimer un article"
-          href="index.php?ctrl=article&action=delete_article&id=<?php echo $objArticle->getId(); ?>">Supprimer l'article</a></p>
-    <?php
-            }
-        ?>-->
+    <div class="mb-3 fw-bold">Nombre d'inscrits : {{ nbReg }}</div>
 </div>
 

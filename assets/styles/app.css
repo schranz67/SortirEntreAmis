@@ -2,7 +2,6 @@
     --blue-color:#3465A4;
     --green-color:#069A2E;
     --brown-color:#EA7500;
-
 }
 
 body {
@@ -10,12 +9,12 @@ body {
     font-family: "Comic Sans MS";
 }
 
-.center {
-    text-align: center;
-}
-
 .font_ravie {
     font-family: Ravie;
+}
+
+.center {
+    text-align: center;
 }
 
 h1{
@@ -44,6 +43,10 @@ h1{
 
 .txt_mobile{
     display: none;
+}
+
+.btn_w{
+    width: 120px;
 }
 
 /* Responsive */

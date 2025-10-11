@@ -14,16 +14,26 @@
         <div class="col-lg-4 blue txt_desktop">
             {% if eventIndex > 0 %}
                 {% set event = events[eventIndex-1] %}
+                {% set nbReg = nbRegs[0] %}
                 {%  include 'partials/_event_card.html.twig' %}
             {% endif %}
         </div>
         <div class="col-lg-4 green">
             {% set event = events[eventIndex] %}
+            {% set nbReg = nbRegs[1] %}
             {%  include 'partials/_event_card.html.twig' %}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
         </div>
         <div class="col-lg-4 brown txt_desktop">
             {% if eventIndex < (events|length - 1) %}
                 {% set event = events[eventIndex+1] %}
+                {% set nbReg = nbRegs[2] %}
                 {%  include 'partials/_event_card.html.twig' %}
             {% endif %}
         </div>
