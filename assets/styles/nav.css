@@ -9,7 +9,7 @@
 /* Responsive */
 @media (max-width: 992px) {
     .hide_mobile {
-        display: none;
+        display: none !important;
     }
 
     .navbar-collapse {

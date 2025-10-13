@@ -36,7 +36,7 @@ class EventController extends AbstractController
         }
 
         # Rendu du template Twig avec les événements et les inscriptions
-        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $registrations,]);
+        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $registrations, 'view' => 'list']);
     }
 
     /**
@@ -51,7 +51,7 @@ class EventController extends AbstractController
     public function detail_id($id, EventRepository $eventRepository)          // public function detail_id($id)
     {
         # Récupération de tous les évènements
-        $events = $eventRepository->findBy([], ['start' => 'ASC'], );
+        $events = $eventRepository->findBy([], ['start' => 'ASC']);
 
         # Recherche de l'index du tableau où se trouve l'évènement lié à l'id passé en paramètre
         $eventIndex = 0;
@@ -61,6 +61,9 @@ class EventController extends AbstractController
                 break;
             }
         }
+
+        # Récupération des inscriptions liées à l'évènement courant
+        $registrations[$events[$index]->getId()] = $events[$index]->getRegistrations();
 
         # Comptage du nombre d'inscrits à l'évènement en cours
         $nbRegs[]=[0,0,0];
@@ -81,7 +84,7 @@ class EventController extends AbstractController
         }
 
         # Rendu du template Twig avec toutes les informations nécessaires
-        return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'nbRegs' => $nbRegs, 'idPrec' => $idPrec, 'id' => $id, 'idSuiv' => $idSuiv,'events' => $events]);
+        return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'nbRegs' => $nbRegs, 'idPrec' => $idPrec, 'id' => $id, 'idSuiv' => $idSuiv,'events' => $events, 'registrations' => $registrations]);
     }
 
     /**
@@ -154,7 +157,7 @@ class EventController extends AbstractController
      *
      * @return Template
      */
-    #[Route('/admin/delete_event/{id}', name: 'event_delete')]
+    #[Route('/admin/delete_event/{id}', name: 'event_delete', methods: ['GET'])]
     public function delete($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
         # Récupération de l'évènement
@@ -179,8 +182,8 @@ class EventController extends AbstractController
      *
      * @return Template
      */
-    #[Route('/profile/register_event/{id}', name: 'event_register')]
-    public function register_event($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
+    #[Route('/profile/register_event/{view}_{id}', name: 'event_register', methods: ['GET'])]
+    public function register_event($view, $id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
         # Récupération de l'évènement
         $event = $eventRepository->find($id);
@@ -193,10 +196,17 @@ class EventController extends AbstractController
         $entityManager->flush();
 
         # Ajout du message flash de confirmation
-        $this->addFlash('success', 'Votre inscription a bien été prise en compte !');
+        if ($view === 'detail') {
+            $this->addFlash('success', 'Votre inscription a bien été prise en compte !');
+        }
 
-        # Redirection vers le détail de l'évènement
-        return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
+        # Redirection vers la page source
+        switch ($view){
+            case 'list': return $this->redirectToRoute('events_list');
+            case 'detail': return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
+            default: return $this->redirectToRoute('default_home');
+        }
+        //return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
     }
 
     /**
@@ -208,8 +218,8 @@ class EventController extends AbstractController
      *
      * @return Template
      */
-    #[Route('/profile/unregister_event/{id}', name: 'event_unregister')]
-    public function unregister_event($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
+    #[Route('/profile/unregister_event/{view}_{id}', name: 'event_unregister', methods: ['GET'])]
+    public function unregister_event($view, $id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
         # Récupération de l'évènement
         $event = $eventRepository->find($id);
@@ -222,7 +232,17 @@ class EventController extends AbstractController
         $entityManager->persist($event);
         $entityManager->flush();
 
-        # Redirection vers la liste des évènements
-        return $this->redirectToRoute('events_list');
+        # Ajout du message flash de confirmation
+        if ($view === 'detail') {
+            $this->addFlash('success', 'Votre désinscription a bien été prise en compte !');
+        }
+
+        # Redirection vers la page source
+        switch ($view){
+            case 'list': return $this->redirectToRoute('events_list');
+            case 'detail': return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
+            default: return $this->redirectToRoute('default_home');
+        }
+        //return $this->redirectToRoute('events_list');
     }
 }

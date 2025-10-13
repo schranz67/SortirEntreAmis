@@ -49,10 +49,6 @@ h1{
     width: 120px;
 }
 
-.form-error {
-    white-space: pre-line; /* interprète les \n comme des sauts de ligne */
-}
-
 /* Responsive */
 @media (max-width: 992px) {
     .txt_mobile {

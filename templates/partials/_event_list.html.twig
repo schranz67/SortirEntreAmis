@@ -36,19 +36,7 @@
                                 <a href="/admin/delete_event/{{ event.id }}" class="btn btn-sm btn-danger btn_w txt_desktop delete_event">Supprimer</a>
                             </div>
                         {% endif %}
-                        {% if app.user.id != event.organizer.id %}
-                            {% if app.user.id not in registrations[event.id]|default([]) %}
-                                <div class="col-md-auto">
-                                    <a href="/profile/register_event/{{ event.id }}" class="btn btn-sm btn-success btn_w confirm_register">S'inscrire</a>
-                                </div>
-                            {% else  %}
-                                <div class="col-md-auto">
-                                    <a href="/profile/unregister_event/{{ event.id }}" class="btn btn-sm btn-warning btn_w confirm_unregister">Se désinscrire</a>
-                                </div>
-                            {% endif %}
-                        {% else  %}
-                            <div class="col-md-auto" style="width: 120px;"></div>
-                        {%  endif %}
+                        {%  include 'partials/_event_list_register.html.twig' %}
                     </div>
                 </td>
             {% endif %}

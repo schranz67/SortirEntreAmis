@@ -29,7 +29,7 @@ class DefaultController extends AbstractController
         }
 
         # Rendu du template Twig avec les événements et les inscriptions
-        return $this->render('default/home.html.twig', ['events' => $events, 'registrations' => $registrations]);
+        return $this->render('default/home.html.twig', ['events' => $events, 'registrations' => $registrations, 'view' => 'home']);
     }
 
 }
