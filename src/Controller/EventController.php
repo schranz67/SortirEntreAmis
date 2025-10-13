@@ -127,7 +127,7 @@ class EventController extends AbstractController
             # Récupération de l'image
             $uploadedFile = $form['imageFile']->getData();
             if ($uploadedFile) {
-                $destination = $this->getParameter('kernel.project_dir') . '/public/uploads/events_images';
+                $destination = $this->getParameter('events_images_directory');
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $slugger->slug($originalFilename) . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
                 # Déplacement du fichier vers le dossier défini
@@ -163,11 +163,18 @@ class EventController extends AbstractController
         # Récupération de l'évènement
         $event = $eventRepository->find($id);
 
-        # Suppression de l'évènement
-        if ($event) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+        // Suppression de l'image si elle existe
+        $imageFilename = $event->getImage();
+        if ($imageFilename) {
+            $imagePath = $this->getParameter('events_images_directory')  . '/' . $imageFilename;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
         }
+
+        # Suppression de l'évènement
+        $entityManager->remove($event);
+        $entityManager->flush();
 
         # Redirection vers la liste des évènements
         return $this->redirectToRoute('events_list');
