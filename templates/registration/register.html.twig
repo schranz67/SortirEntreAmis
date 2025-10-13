@@ -7,7 +7,7 @@
         <div>
             <h1 class="h3 mt-4 mb-4 font-weight-normal">Création de votre compte !</h1>
             <div>
-                {{ form_errors(registrationForm) }}
+                {{ form_errors(registrationForm)|raw }}
                 {{ form_start(registrationForm) }}
             </div>
             <div class="mb-2">{{ form_row(registrationForm.name, {

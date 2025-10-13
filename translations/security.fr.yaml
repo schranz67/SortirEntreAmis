@@ -1,0 +1,4 @@
+# translations/security.fr.yaml
+Invalid credentials: "Identifiants invalides. Veuillez réessayer."
+Too many failed login attempts, please try again later.: "Trop de tentatives de connexion. Réessayez dans quelques minutes."
+
