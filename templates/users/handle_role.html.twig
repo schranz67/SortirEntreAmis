@@ -1,9 +1,23 @@
 {% extends "base.html.twig" %}
 
 {%  block title %}
-    Liste d'un évènement
+    Gestion des rôles
 {% endblock %}
 
 {%  block body %}
-    <h1>ROLE</h1>
+    <table class="d-flex align-items-center justify-content-center py-4 fs-4">
+        {% for user in users %}
+            <tr>
+                <td class="pe-4">{{ user.name }} {{ user.firstname }}</td>
+                <td><a href="/admin/change_role/{{ user.id }}" class="btn btn-sm btn-success btn_w confirm_admin">Passer admin</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 {%  endblock %}

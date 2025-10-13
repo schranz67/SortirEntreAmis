@@ -7,6 +7,14 @@ delEvent.forEach(link => {
     })
 });
 
+const confirmAdmin = document.querySelectorAll(".confirm_admin");
+confirmAdmin.forEach(link => {
+    link.addEventListener('click', e => {
+        $confirm_admin=confirm("Voulez-vous vraiment faire passer cet utilisateur en administrateur ?");
+        if (!$confirm_admin) { e.preventDefault(); }
+    })
+});
+
 const confReg = document.querySelectorAll(".confirm_register");
 confReg.forEach(link => {
     link.addEventListener('click', e => {

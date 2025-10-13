@@ -27,7 +27,7 @@ class EventController extends AbstractController
     public function list(EventRepository $eventRepository)
     {
         # Récupération de tous les évènements
-        $events = $eventRepository->findBy([], ['start' => 'ASC'], );
+        $events = $eventRepository->findBy([], ['start' => 'ASC']);
 
         # Récupération des inscriptions liées à chaque évènement
         $registrations=[];
@@ -206,7 +206,6 @@ class EventController extends AbstractController
             case 'detail': return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
             default: return $this->redirectToRoute('default_home');
         }
-        //return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
     }
 
     /**
@@ -243,6 +242,5 @@ class EventController extends AbstractController
             case 'detail': return $this->redirectToRoute('events_detail_id',['id' => $event->getId()]);
             default: return $this->redirectToRoute('default_home');
         }
-        //return $this->redirectToRoute('events_list');
     }
 }
