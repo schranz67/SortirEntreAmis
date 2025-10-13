@@ -96,7 +96,7 @@ class EventController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param SluggerInterface $slugger
      *
- * @return Template
+     * @return Template
      */
     #[Route('/admin/add_edit_event', name: 'event_create', methods: ['GET', 'POST'])]
     #[Route('/admin/add_edit_event/{id}', name: 'event_add', methods: ['GET', 'POST'])]

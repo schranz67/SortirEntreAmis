@@ -13,7 +13,7 @@ class UserController extends AbstractController
     /**
      * Page de gestion des rôles
      *
-     * @Param UserRepository
+     * @Param UserRepository $userRepository
      *
      * @return Template
      */
@@ -30,7 +30,9 @@ class UserController extends AbstractController
     /**
      * Changement de rôles
      *
-     * @Param UserRepository
+     * @Param int $id
+     * @Param UserRepository $userRepository
+     * @Param EntityManagerInterface $entityManager
      *
      * @return Template
      */
