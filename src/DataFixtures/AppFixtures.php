@@ -37,22 +37,30 @@ class AppFixtures extends Fixture
         $place3->setName('Maison des sports');
         $manager->persist($place3);
 
-        # Création d'un administrateur et d'un utilisateur
+        # Création de deux administrateurs et d'un utilisateur
         $admin = new User();
         $admin->setEmail('admin@gmail.com');
         $admin->setRoles(['ROLE_ADMIN']);
         $password = $this->hasher->hashPassword($admin, 'admin1234');
         $admin->setPassword($password);
-        $admin->setName('admin');
-        $admin->setFirstname('admin');
+        $admin->setName('LECORNU');
+        $admin->setFirstname('Sébastien');
         $manager->persist($admin);
+        $admin2 = new User();
+        $admin2->setEmail('admin2@gmail.com');
+        $admin2->setRoles(['ROLE_ADMIN']);
+        $password = $this->hasher->hashPassword($admin2, 'admin1234');
+        $admin2->setPassword($password);
+        $admin2->setName('BORNE');
+        $admin2->setFirstname('Elisabeth');
+        $manager->persist($admin2);
         $user = new User();
         $user->setEmail('user@gmail.com');
         $user->setRoles(['ROLE_USER']);
         $password = $this->hasher->hashPassword($user, 'user1234');
         $user->setPassword($password);
-        $user->setName('user');
-        $user->setFirstname('user');
+        $user->setName('DESCHAMPS');
+        $user->setFirstname('Didier');
         $manager->persist($user);
 
         # Création de 5 évènements
@@ -62,42 +70,51 @@ class AppFixtures extends Fixture
         $event1->setTitle('Piscine');
         $event1->setCategory($category2);
         $event1->setPlace($place3);
-        $event1->setStart(new \DateTime('2025-10-08 10:30:00'));
+        $event1->setStart(new \DateTime('2025-10-13 10:30:00'));
         $events[] = $event1;
 
         $event2 = new Event();
         $event2->setTitle('Lecture de livres');
         $event2->setCategory($category1);
         $event2->setPlace($place1);
-        $event2->setStart(new \DateTime('2025-10-08 15:00:00'));
+        $event2->setStart(new \DateTime('2025-10-16 15:00:00'));
         $events[] = $event2;
 
         $event3 = new Event();
         $event3->setTitle('Conte pour enfant');
         $event3->setCategory($category1);
         $event3->setPlace($place2);
-        $event3->setStart(new \DateTime('2025-10-09 15:00:00'));
+        $event3->setStart(new \DateTime('2025-10-1615:00:00'));
         $events[] = $event3;
 
         $event4 = new Event();
         $event4->setTitle('Football');
         $event4->setCategory($category2);
         $event4->setPlace($place3);
-        $event4->setStart(new \DateTime('2025-10-09 16:30:00'));
+        $event4->setStart(new \DateTime('2025-10-17 16:30:00'));
         $events[] = $event4;
 
         $event5 = new Event();
         $event5->setTitle('Repas sportif');
         $event5->setCategory($category2);
         $event5->setPlace($place3);
-        $event5->setStart(new \DateTime('2025-10-10 14:00:00'));
+        $event5->setStart(new \DateTime('2025-10-17 14:00:00'));
+        $events[] = $event5;
+
+        $event5 = new Event();
+        $event5->setTitle('Lecture de livres');
+        $event5->setCategory($category1);
+        $event5->setPlace($place1);
+        $event5->setStart(new \DateTime('2025-10-18 14:00:00'));
         $events[] = $event5;
 
         foreach ($events as $event) {
             $event->setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.');
             $event->setOrganizer($admin);
+            $event->setImage("Evenement.png");
             $manager->persist($event);
         }
+        $event4->setOrganizer($admin2);
 
         # Sauvegarder les changements dans la base de données
         $manager->flush();

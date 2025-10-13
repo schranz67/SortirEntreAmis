@@ -27,8 +27,9 @@ Pour charger les données de mockup (fixtures) :<br>
 ```php bin/console doctrine:fixtures:load -q```
 
 Les comptes créés par défaut sont les suivants :<br>
-admin : admin@gmail.com / admin1234<br>
-user  : user@gmail.com  / user1234      
+admin  : admin@gmail.com / admin1234<br>
+admin2 : admin2@gmail.com / admin1234<br>
+user   : user@gmail.com  / user1234      
 
 Enfin, pour lancer le serveur Symfony :<br>
 ```symfony serve```
