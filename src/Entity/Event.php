@@ -40,6 +40,8 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organizer = null;
 
+    private ?int $nbRegs = null;
+
     /**
      * @var Collection<int, User>
      */
@@ -164,8 +166,8 @@ class Event
         return $this;
     }
 
-    # Comptage du nombre d'utilisateurs
-    public function countUsers(): int
+     # Récupération du nombre d'utilisateurs
+    public function getNbRegs(): int
     {
         return $this->user->count();
     }
@@ -180,4 +182,5 @@ class Event
         }
         return $registrations;
     }
+
 }

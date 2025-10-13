@@ -7,11 +7,12 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Form\AddEditEventFormType;
 use App\Repository\EventRepository;
+use App\Service\EventManager;
+use App\Service\FileUploadManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Twig\Template;
 
 class EventController extends AbstractController
@@ -24,16 +25,13 @@ class EventController extends AbstractController
      * @return Template
      */
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
-    public function list(EventRepository $eventRepository)
+    public function list(EventRepository $eventRepository, EventManager $eventManager)
     {
         # Récupération de tous les évènements
         $events = $eventRepository->findBy([], ['start' => 'ASC']);
 
-        # Récupération des inscriptions liées à chaque évènement
-        $registrations=[];
-        foreach ($events as $event) {
-            $registrations[$event->getId()] = $event->getRegistrations();
-        }
+        # Récupération des inscriptions liées aux évènements
+        $registrations=$eventManager->getRegistrationEvents($events);
 
         # Rendu du template Twig avec les événements et les inscriptions
         return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $registrations, 'view' => 'list']);
@@ -65,26 +63,8 @@ class EventController extends AbstractController
         # Récupération des inscriptions liées à l'évènement courant
         $registrations[$events[$index]->getId()] = $events[$index]->getRegistrations();
 
-        # Comptage du nombre d'inscrits à l'évènement en cours
-        $nbRegs[]=[0,0,0];
-        $nbRegs[1]=$events[$eventIndex]->countUsers();
-
-        # Récupération de l'ID précédent si existant et comptage du nombre d'inscrits à l'évènement précédent
-        $idPrec=-1;
-        if ($eventIndex>0){
-            $idPrec = $events[$eventIndex-1]->getId();
-            $nbRegs[0]=$events[$eventIndex-1]->countUsers();
-        }
-
-        # Récupération de l'id suivant si existant et comptage du nombre d'inscrits à l'évènement suivant
-        $idSuiv=-1;
-        if ($eventIndex<count($events)-1){
-            $idSuiv = $events[$eventIndex+1]->getId();
-            $nbRegs[2]=$events[$eventIndex+1]->countUsers();
-        }
-
         # Rendu du template Twig avec toutes les informations nécessaires
-        return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'nbRegs' => $nbRegs, 'idPrec' => $idPrec, 'id' => $id, 'idSuiv' => $idSuiv,'events' => $events, 'registrations' => $registrations]);
+        return $this->render('events/detail_event.html.twig', ['eventIndex' => $eventIndex, 'id' => $id, 'events' => $events, 'registrations' => $registrations]);
     }
 
     /**
@@ -94,13 +74,13 @@ class EventController extends AbstractController
      * @param EventRepository $eventRepository
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param SluggerInterface $slugger
      *
      * @return Template
+     *
      */
     #[Route('/admin/add_edit_event', name: 'event_create', methods: ['GET', 'POST'])]
     #[Route('/admin/add_edit_event/{id}', name: 'event_add', methods: ['GET', 'POST'])]
-    public function create_event(?int $id = null, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager,  SluggerInterface $slugger)
+    public function create_event(?int $id = null, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager, FileUploadManager $fum)
     {
         # Récupération de l'évènement si présence d'un id
         if ($id) {
@@ -124,15 +104,11 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             # Récupération des données du formulaire;
             $event = $form->getData();
-            # Récupération de l'image
+            # Traitement de l'image
             $uploadedFile = $form['imageFile']->getData();
             if ($uploadedFile) {
                 $destination = $this->getParameter('events_images_directory');
-                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $newFilename = $slugger->slug($originalFilename) . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
-                # Déplacement du fichier vers le dossier défini
-                $uploadedFile->move($destination, $newFilename);
-                # Sauvegarde du nom du fichier
+                $newFilename = $fum->upload($uploadedFile, $destination);
                 $event->setImage($newFilename);
             }
 
@@ -180,7 +156,7 @@ class EventController extends AbstractController
         return $this->redirectToRoute('events_list');
     }
 
-    /**
+     /**
      * Inscription à l'évènement
      *
      * @param int $id
