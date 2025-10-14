@@ -21,8 +21,8 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'default_home', methods: ['GET'])]
     public function home(EventRepository $eventRepository, EventManager $eventManager)
     {
-        # Récupération des 3 derniers évènements
-        $events = $eventRepository->findBy([], ['start' => 'ASC'], 3);
+        # Récupération des 3 prochains évènements à venir
+        $events = $eventRepository->findUpcomingEvents(3);
 
         # Récupération des inscriptions liées aux évènements
         $registrations=$eventManager->getRegistrationEvents($events);

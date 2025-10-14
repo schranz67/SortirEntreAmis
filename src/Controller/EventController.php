@@ -27,8 +27,15 @@ class EventController extends AbstractController
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
     public function list(EventRepository $eventRepository, EventManager $eventManager)
     {
-        # Récupération de tous les évènements
-        $events = $eventRepository->findBy([], ['start' => 'ASC']);
+        # Récupération des évènements à venir si utilisateur
+        $user = $this->getUser();
+        if (!in_array('ROLE_ADMIN',$user->getRoles())){
+            $events = $eventRepository->findUpcomingEvents();
+        }
+        # Récupération de tous les évènements si administrateur
+        else{
+            $events = $eventRepository->findBy([], ['start' => 'ASC']);
+       }
 
         # Récupération des inscriptions liées aux évènements
         $registrations=$eventManager->getRegistrationEvents($events);
@@ -48,8 +55,15 @@ class EventController extends AbstractController
     #[Route('/profile/detail_event/{id}', name: 'events_detail_id', methods: ['GET'])]
     public function detail_id($id, EventRepository $eventRepository)          // public function detail_id($id)
     {
-        # Récupération de tous les évènements
-        $events = $eventRepository->findBy([], ['start' => 'ASC']);
+        # Récupération des évènements à venir si utilisateur
+        $user = $this->getUser();
+        if (!in_array('ROLE_ADMIN',$user->getRoles())){
+            $events = $eventRepository->findUpcomingEvents();
+        }
+        # Récupération de tous les évènements si administrateur
+        else{
+            $events = $eventRepository->findBy([], ['start' => 'ASC']);
+        }
 
         # Recherche de l'index du tableau où se trouve l'évènement lié à l'id passé en paramètre
         $eventIndex = 0;
