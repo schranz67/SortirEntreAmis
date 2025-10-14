@@ -11,13 +11,13 @@
                 {{ form_start(registrationForm) }}
             </div>
             <div class="mb-2">{{ form_row(registrationForm.name, {
-                    label: 'Nom', attr: { class: 'form-control w-100', autofocus: true } }) }}</div>
+                    label: 'Nom', attr: { class: 'form-control w-100', autofocus: true, autocomplete: 'off' } }) }}</div>
             <div class="mb-2">{{ form_row(registrationForm.firstname, {
-                    label: 'Prénom', attr: { class: 'form-control w-100' } }) }}</div>
+                    label: 'Prénom', attr: { class: 'form-control w-100', autocomplete: 'off' } }) }}</div>
             <div class="mb-2">{{ form_row(registrationForm.email, {
-                    attr: { class: 'form-control w-100' } }) }}</div>
+                    attr: { class: 'form-control w-100', autocomplete: 'off' } }) }}</div>
             <div class="mb-2">{{ form_row(registrationForm.plainPassword, {
-                    label: 'Mot de passe', attr: { class: 'form-control w-100' } }) }}</div>
+                    label: 'Mot de passe', attr: { class: 'form-control w-100', autocomplete: 'off' } }) }}</div>
             <div class="mb-2">{{ form_row(registrationForm.agreeTerms, {
                     label: 'Accord sur les termes', label_attr: { class: 'me-2' } }) }}</div>
 

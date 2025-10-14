@@ -17,7 +17,7 @@ function confirmation(selector, message) {
 }
 
 // Empêchement de la redirection vers la route de suppression si l'administrateur ne confirme pas la suppression de l'évènement
-confirmation(".delete_event", "Voulez-vous vraiment supprimer cet enregistrement ?");
+confirmation(".delete_event", "Voulez-vous vraiment supprimer cette sortie ?");
 
 // Confirmation du passage d'un utilisateur en administrateur
 confirmation(".confirm_admin", "Voulez-vous vraiment faire passer cet utilisateur en administrateur ?");
