@@ -10,6 +10,9 @@ services:
             - ./:/var/www/symfony
         depends_on:
             - database
+        environment:
+            DATABASE_URL: mysql://root:root1234@database:3306/sortirentreamis
+        working_dir: /var/www/symfony
 
     database:
         image: mysql:latest
@@ -17,12 +20,26 @@ services:
         environment:
             MYSQL_DATABASE: sortirentreamis
             MYSQL_USER: root
-            MYSQL_PASSWORD: ''
+            MYSQL_PASSWORD: root1234
             MYSQL_ROOT_PASSWORD: root1234
         ports:
             - "3306:3306"
         volumes:
             - db_data:/var/lib/mysql:rw
+
+    tester:
+        build: .
+        container_name: symfony_tester
+        depends_on:
+            - app
+        working_dir: /var/www/symfony
+        command: >
+            bash -c "vendor/bin/phpunit --log-junit var/test-results.xml &&
+                     vendor/bin/phpcov merge var/coverage --html var/coverage-report"
+        volumes:
+            - ./:/var/www/symfony
+        environment:
+            DATABASE_URL: mysql://root:root1234@database:3306/sortirentreamis
 
 volumes:
     db_data:
