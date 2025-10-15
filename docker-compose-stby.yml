@@ -7,16 +7,16 @@ services:
         ports:
             - "8080:80"
         volumes:
-            - ./:/var/www/symfony
+            - ./:/var/www/sortirentreamis
         depends_on:
             - database
         environment:
             DATABASE_URL: mysql://root:root1234@database:3306/sortirentreamis
-        working_dir: /var/www/symfony
+        working_dir: /var/www/sortirentreamis
 
     database:
         image: mysql:latest
-        container_name: symfony_sortirentreamis
+        container_name: sortirentreamis
         environment:
             MYSQL_DATABASE: sortirentreamis
             MYSQL_USER: root
@@ -29,15 +29,15 @@ services:
 
     tester:
         build: .
-        container_name: symfony_tester
+        container_name: sortirentreamis_tester
         depends_on:
             - app
-        working_dir: /var/www/symfony
+        working_dir: /var/www/sortirentreamis
         command: >
             bash -c "vendor/bin/phpunit --log-junit var/test-results.xml &&
                      vendor/bin/phpcov merge var/coverage --html var/coverage-report"
         volumes:
-            - ./:/var/www/symfony
+            - ./:/var/www/sortirentreamis
         environment:
             DATABASE_URL: mysql://root:root1234@database:3306/sortirentreamis
 
