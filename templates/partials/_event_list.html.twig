@@ -13,7 +13,7 @@
     {% for event in events %}
         {% if event.start|date('d/m/Y') != dateEvent %}
             <tr>
-                <td colspan="7" class="bg-info"><strong>{{ event.start|date('l d F') }}</strong></td>
+                <td colspan="7" class="bg-info"><strong>{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM')|capitalize }}</strong></td>
             </tr>
         {% endif %}
         <tr>
