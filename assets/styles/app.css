@@ -34,16 +34,27 @@ body {
     color: white !important;
 }
 
-.custom-table tbody .brown {
-    background-color: var(--brown-color, blue) !important;
-}
-
 .green{
     color: var(--green-color, green);
 }
 
+a{
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover{
+    color: var(--green-color, green) !important;
+    font-weight: bold;
+}
+
 .brown{
     color: var(--brown-color, brown);
+}
+
+.custom-table tbody .brown {
+    background-color: var(--brown-color, blue) !important;
 }
 
 .txt_mobile{

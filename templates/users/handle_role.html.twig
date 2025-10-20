@@ -5,14 +5,14 @@
 {% endblock %}
 
 {%  block body %}
-    <table class="d-flex align-items-center justify-content-center py-4 fs-4">
+    <div class="d-flex flex-wrap justify-content-center fs-4">
         {% for user in users %}
-            <tr>
-                <td class="pe-4">{{ user.name }} {{ user.firstname }}</td>
-                <td><a href="/admin/change_role/{{ user.id }}" class="btn btn-sm btn-success btn_w confirm_admin">Passer admin</a></td>
-            </tr>
+            <div class="d-flex flex-column align-items-center border rounded p-3 m-2">
+                <div class="mb-2 fw-bold text-center">{{ user.name }} {{ user.firstname }}</div>
+                <div><a href="{{ path('App\\Controller\\UserController::change_role', {'id':user.id}) }}" class="btn btn-sm btn-success btn_w confirm_admin">Passer admin</a></div>
+            </div>
         {% endfor %}
-    </table>
+    </div>
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="alert alert-{{ label }}">

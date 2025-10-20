@@ -19,7 +19,7 @@
         <tr class="text-start">
             <td class="bg-light">{{ event.start|date('H:i') }}</td>
             {% if app.user %}
-                <td class="bg-light"><a href="/profile/detail_event/{{event.id}}">{{ event.title }}</a></td>
+                <td class="bg-light"><a href="{{ path('App\\Controller\\EventController::detail_id', {'id':event.id}) }}">{{ event.title }}</a></td>
             {% else %}
                 <td class="bg-light">{{ event.title }}</td>
             {% endif %}
@@ -30,17 +30,16 @@
                     <div class="d-flex justify-content-end gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                             <div class="col-md-auto">
-                                <a href="/admin/add_edit_event/{{ event.id }}" class="btn btn-sm btn-primary btn_w txt_desktop">Modifier</a>
+                                <a href="{{ path('App\\Controller\\EventController::add_edit_event', {'id':event.id}) }}"  class="btn btn-sm btn-primary btn_w txt_desktop">Modifier</a>
                             </div>
                             <div class="col-md-auto">
-                                <a href="/admin/delete_event/{{ event.id }}" class="btn btn-sm btn-danger btn_w txt_desktop delete_event">Supprimer</a>
+                                <a href="{{ path('App\\Controller\\EventController::delete', {'id':event.id}) }}" class="btn btn-sm btn-danger btn_w txt_desktop delete_event">Supprimer</a>
                             </div>
                         {% endif %}
                         {%  include 'partials/_event_list_register.html.twig' %}
                     </div>
                 {% endif %}
-                </td>
-
+            </td>
         </tr>
         {% set dateEvent = event.start|date('d/m/Y') %}
     {% endfor %}

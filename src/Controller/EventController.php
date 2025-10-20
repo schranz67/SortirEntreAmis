@@ -92,9 +92,8 @@ class EventController extends AbstractController
      * @return Template
      *
      */
-    #[Route('/admin/add_edit_event', name: 'event_create', methods: ['GET', 'POST'])]
-    #[Route('/admin/add_edit_event/{id}', name: 'event_add', methods: ['GET', 'POST'])]
-    public function create_event(?int $id = null, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager, FileUploadManager $fum)
+    #[Route('/admin/add_edit_event/{id?}', name: 'event_add_edit', methods: ['GET', 'POST'])]
+    public function add_edit_event(?int $id = null, EventRepository $eventRepository, Request $request, EntityManagerInterface $entityManager, FileUploadManager $fum)
     {
         # Récupération de l'évènement si présence d'un id
         if ($id) {

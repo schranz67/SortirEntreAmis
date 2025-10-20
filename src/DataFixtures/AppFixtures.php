@@ -60,8 +60,16 @@ class AppFixtures extends Fixture
         $password = $this->hasher->hashPassword($user, 'user1234');
         $user->setPassword($password);
         $user->setName('DESCHAMPS');
-        $user->setFirstname('Didier');
+        $user->setFirstname('Laurent');
         $manager->persist($user);
+        $user2 = new user();
+        $user2->setEmail('user2@gmail.com');
+        $user2->setRoles(['ROLE_USER']);
+        $password = $this->hasher->hashPassword($user2, 'user1234');
+        $user2->setPassword($password);
+        $user2->setName('VINCENT');
+        $user2->setFirstname('Didier');
+        $manager->persist($user2);
 
         # Création de 5 évènements
         $events = [];

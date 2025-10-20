@@ -1,11 +1,11 @@
 {% if app.user.id != event.organizer.id %}
     {% if app.user.id not in registrations[event.id]|default([]) %}
         <div class="col-md-auto">
-            <a href="/profile/register_event/{{ view }}_{{ event.id }}" class="btn btn-sm btn-success btn_w confirm_register">S'inscrire</a>
+            <a href="{{ path('App\\Controller\\EventController::register_event', {'view':view, 'id':event.id}) }}" class="btn btn-sm btn-success btn_w confirm_register">S'inscrire</a>
         </div>
     {% else  %}
         <div class="col-md-auto">
-            <a href="/profile/unregister_event/{{ view }}_{{ event.id }}" class="btn btn-sm btn-warning btn_w confirm_unregister">Se désinscrire</a>
+            <a href="{{ path('App\\Controller\\EventController::unregister_event', {'view':view, 'id':event.id}) }}" class="btn btn-sm btn-warning btn_w confirm_unregister">Se désinscrire</a>
         </div>
     {% endif %}
 {% else  %}
