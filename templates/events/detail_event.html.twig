@@ -6,19 +6,19 @@
 
 {%  block body %}
     {% if eventIndex > 0 %}
-        <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': events[eventIndex-1].id}) }}"><i class="fas fa-arrow-alt-circle-left fs-2 mb-4"></i></a>
+        <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': events[eventIndex-1].id}) }}"><i class="fas fa-arrow-alt-circle-left fs-2 mb-3"></i></a>
     {% else %}
-        <p class="fs-2 mb-2">&nbsp;</p> {# espace insécable pour conserver la hauteur #}
+        <p class="fs-2 mb-2">&nbsp;</p>
     {% endif %}
     <div class="row g-3">
-        <div class="col-lg-4 blue txt_desktop">
+        <div class="col-lg-3 blue txt_desktop">
             {% if eventIndex > 0 %}
                 {% set event = events[eventIndex-1] %}
                 {% set view = '' %}
                 {%  include 'partials/_event_card.html.twig' %}
             {% endif %}
         </div>
-        <div class="col-lg-4 green fs-5">
+        <div class="col-lg-6 green fs-4">
             {% set event = events[eventIndex] %}
             {% set view = 'detail' %}
             {%  include 'partials/_event_card.html.twig' %}
@@ -30,7 +30,7 @@
                 {% endfor %}
             {% endfor %}
         </div>
-        <div class="col-lg-4 brown txt_desktop">
+        <div class="col-lg-3 brown txt_desktop">
             {% if eventIndex < (events|length - 1) %}
                 {% set event = events[eventIndex+1] %}
                 {% set view = '' %}
@@ -40,7 +40,7 @@
     </div>
     <div class="text-end">
         {% if eventIndex < (events|length - 1) %}
-            <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': events[eventIndex+1].id}) }}"><i class="fas fa-arrow-alt-circle-right fs-2 "></i></a>
+            <a href="{{ path('App\\Controller\\EventController::detail_id', {'id': events[eventIndex+1].id}) }}"><i class="fas fa-arrow-alt-circle-right fs-2"></i></a>
         {% endif %}
     </div>
 {%  endblock %}

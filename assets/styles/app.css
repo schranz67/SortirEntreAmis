@@ -17,10 +17,6 @@ body {
     text-align: center;
 }
 
-h1{
-    font-size: 1.6rem;
-}
-
 .p_augm{
     font-size: 1.2rem;
 }
@@ -31,6 +27,15 @@ h1{
 
 .blue{
     color: var(--blue-color, blue);
+}
+
+.custom-table thead th {
+    background-color: var(--blue-color, blue) !important;
+    color: white !important;
+}
+
+.custom-table tbody .brown {
+    background-color: var(--brown-color, blue) !important;
 }
 
 .green{
@@ -47,6 +52,10 @@ h1{
 
 .btn_w{
     width: 120px;
+}
+
+.btn_w3{
+    width: 360px;
 }
 
 /* Responsive */

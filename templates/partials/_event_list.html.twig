@@ -1,32 +1,32 @@
-<table class="table table-striped mb-0">
+<table class="table mb-0 custom-table">
     <thead class="table-dark">
-    <tr>
-        <th>Date</th>
-        <th>Sortie</th>
-        <th>Lieu</th>
-        <th>Catégorie</th>
-        <th class="text-end"></th>
-    </tr>
+        <tr class="text-start">
+            <th>Date</th>
+            <th>Sortie</th>
+            <th>Lieu</th>
+            <th>Catégorie</th>
+            <th class="text-end"></th>
+        </tr>
     </thead>
     <tbody>
     {% set dateEvent = '' %}
     {% for event in events %}
         {% if event.start|date('d/m/Y') != dateEvent %}
             <tr>
-                <td colspan="7" class="bg-info"><strong>{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM')|capitalize }}</strong></td>
+                <td colspan="5" class="bg-info brown"><strong>{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM')|capitalize }}</strong></td>
             </tr>
         {% endif %}
-        <tr>
-            <td>{{ event.start|date('H:i') }}</td>
+        <tr class="text-start">
+            <td class="bg-light">{{ event.start|date('H:i') }}</td>
             {% if app.user %}
-                <td><a href="/profile/detail_event/{{event.id}}">{{ event.title }}</a></td>
+                <td class="bg-light"><a href="/profile/detail_event/{{event.id}}">{{ event.title }}</a></td>
             {% else %}
-                <td>{{ event.title }}</td>
+                <td class="bg-light">{{ event.title }}</td>
             {% endif %}
-            <td>{{ event.place.name }}</td>
-            <td>{{ event.category.name }}</td>
-            {% if app.user %}
-                <td class="row text-end">
+            <td class="bg-light">{{ event.place.name }}</td>
+            <td class="bg-light">{{ event.category.name }}</td>
+            <td class="text-end btn_w3 bg-light">
+                {% if app.user %}
                     <div class="d-flex justify-content-end gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                             <div class="col-md-auto">
@@ -38,8 +38,9 @@
                         {% endif %}
                         {%  include 'partials/_event_list_register.html.twig' %}
                     </div>
+                {% endif %}
                 </td>
-            {% endif %}
+
         </tr>
         {% set dateEvent = event.start|date('d/m/Y') %}
     {% endfor %}
