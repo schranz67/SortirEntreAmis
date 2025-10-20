@@ -1,7 +1,7 @@
 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative d-flex justify-content-center align-items-center text-center">
     <h2 class="mt-3 mb-auto fw-bold">{{ event.title }}</h2>
     <div class="mb-2 text-secondary">{{ event.category.name }}</div>
-    <div class="mb-2 text-dark">{{ event.start|date('l d F - H:i') }}</div>
+    <div class="mb-2 text-dark">{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM')|capitalize }}</div>
     <div class="mb-3 text-dark">{{ event.place.name }}</div>
     <div class="mb-3 text-dark">Organisateur : {{ event.organizer.firstname }} {{ event.organizer.name }}</div>
     {% if event.image %}
