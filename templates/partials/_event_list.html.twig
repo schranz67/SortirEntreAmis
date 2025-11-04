@@ -1,11 +1,11 @@
 <table class="table mb-0 custom-table">
     <thead class="table-dark">
-        <tr class="text-start">
+        <tr>
             <th>Date</th>
             <th>Sortie</th>
             <th>Lieu</th>
-            <th>Catégorie</th>
-            <th class="text-end"></th>
+            <th class="w-25">Catégorie</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -16,7 +16,7 @@
                 <td colspan="5" class="bg-info brown"><strong>{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM')|capitalize }}</strong></td>
             </tr>
         {% endif %}
-        <tr class="text-start">
+        <tr>
             <td class="bg-light">{{ event.start|date('H:i') }}</td>
             {% if app.user %}
                 <td class="bg-light"><a href="{{ path('App\\Controller\\EventController::detail_id', {'id':event.id}) }}">{{ event.title }}</a></td>
