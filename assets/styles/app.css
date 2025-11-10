@@ -68,6 +68,10 @@ a:hover{
     width: 360px;
 }
 
+.dd_w{
+    width: 250px;
+}
+
 .mw-10{
     min-width: 10%;
 }

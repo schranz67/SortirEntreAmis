@@ -5,5 +5,17 @@
 {% endblock %}
 
 {%  block body %}
+    <form method="GET" action="/profile/list_events" id="formFiltres">
+        <div class="d-flex justify-content-end gap-3">
+            <div>
+                {% set name = "place" %}{% set items = places %}{% set criterion = criteria.place|default(0) %}
+                {%  include 'partials/_event_dropdown.html.twig' %}
+            </div>
+            <div>
+                {% set name = "category" %}{% set items = categories %}{% set criterion = criteria.category|default(0) %}
+                {%  include 'partials/_event_dropdown.html.twig' %}
+            </div>
+        </div>
+    </form>
     {%  include 'partials/_event_list.html.twig' %}
 {%  endblock %}

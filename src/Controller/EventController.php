@@ -6,7 +6,9 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Form\AddEditEventFormType;
+use App\Repository\CategoryRepository;
 use App\Repository\EventRepository;
+use App\Repository\PlaceRepository;
 use App\Service\EventManager;
 use App\Service\FileUploadManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,8 +27,19 @@ class EventController extends AbstractController
      * @return Template
      */
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
-    public function list(EventRepository $eventRepository, EventManager $eventManager)
+    public function list(Request $request, EventRepository $eventRepository, EventManager $eventManager, PlaceRepository $placeRepository, CategoryRepository $categoryRepository)
     {
+        # Préparation des critères de filtre
+        $criteria = [];
+        $place = $request->query->get('place');
+        $category = $request->query->get('category');
+        if (isset($place) && $place > 0){
+            $criteria['place'] = $place;
+        }
+        if (isset($category) && $category > 0){
+            $criteria['category'] = $category;
+        }
+
         # Récupération des évènements à venir si utilisateur
         $user = $this->getUser();
         if (!in_array('ROLE_ADMIN',$user->getRoles())){
@@ -34,14 +47,19 @@ class EventController extends AbstractController
         }
         # Récupération de tous les évènements si administrateur
         else{
-            $events = $eventRepository->findBy([], ['start' => 'ASC']);
+            $events = $eventRepository->findBy($criteria, ['start' => 'ASC']);
        }
+
+        # Récupération de toutes les places et catégories pour filres
+        $places = $placeRepository->findAll();
+        $categories = $categoryRepository->findAll();
 
         # Récupération des inscriptions liées aux évènements
         $registrations=$eventManager->getRegistrationEvents($events);
 
         # Rendu du template Twig avec les événements et les inscriptions
-        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $registrations, 'view' => 'list']);
+        return $this->render('events/list_events.html.twig', ['events' => $events, 'registrations' => $registrations, 'view' => 'list',
+                                                                'places' => $places, 'categories' => $categories, 'criteria' => $criteria]);
     }
 
     /**
