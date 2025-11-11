@@ -35,11 +35,20 @@ class RegistrationController extends AbstractController
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
 
+            $name = htmlspecialchars($form->get('name')->getData(), ENT_QUOTES, 'UTF-8');
+            $firstname = htmlspecialchars($form->get('firstname')->getData(), ENT_QUOTES, 'UTF-8');
+            $email = filter_var($form->get('email')->getData(), FILTER_SANITIZE_EMAIL);
+
             // Encodage du mot de passe en clair
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             // Attribution du rôle utilisateur
             $user->setRoles(['ROLE_USER']);
+
+            // Injection des valeurs sécurisées dans l'objet User
+            $user->setName($name);
+            $user->setFirstname($firstname);
+            $user->setEmail($email);
 
             // Envoi du nouvel utilisateur en base de données
             $entityManager->persist($user);

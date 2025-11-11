@@ -22,8 +22,11 @@ class EventController extends AbstractController
     /**
      * Page de liste des évènements
      *
+     * @param Request $request
      * @param EventRepository $eventRepository
-     *
+     * @param EventManager $eventManager
+     * @param PlaceRepository $placeRepository
+     * @param CategoryRepository $categoryRepository
      * @return Template
      */
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
