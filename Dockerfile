@@ -16,13 +16,16 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 
 # Définition du répertoire de travail dans le répertoire où le conteneur va résider
-WORKDIR /var/www/symfony
+WORKDIR /var/www/html
 
 # Copier les fichiers de l'application
-COPY ./ /var/www/symfony
+COPY ./ /var/www/html
 
 # Configuration Apache pour Symfony
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+
+# Donner les droits à Apache
+RUN chown -R www-data:www-data /var/www/html/var
 
 # Exposition du port
 EXPOSE 80
