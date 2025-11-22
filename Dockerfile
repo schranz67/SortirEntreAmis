@@ -3,6 +3,7 @@ FROM php:8.2-apache
 
 # Installation des extensions nécessaires
 RUN apt-get update && apt-get install -y \
+    default-mysql-client \
     git \
     unzip \
     libonig-dev \
@@ -10,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     curl \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip
+    libicu-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip intl
 
 # Activation du mode rewrite
 RUN a2enmod rewrite

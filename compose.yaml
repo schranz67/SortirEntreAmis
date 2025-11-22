@@ -3,9 +3,11 @@ version: '3.8'
 services:
   app:
     build: .
+    entrypoint: ["sh", "/var/www/sortirentreamis/entrypoint.sh"]
     container_name: symfony_app
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       DATABASE_URL: mysql://root:root1234@database:3306/sortirentreamis
     working_dir: /var/www/sortirentreamis
@@ -13,14 +15,14 @@ services:
       - ./:/var/www/sortirentreamis
       - ./var/test-results:/var/www/sortirentreamis/var/test-results
       - ./var/coverage:/var/www/sortirentreamis/var/coverage
+    ports:
+      - "8025:80"
 
   database:
     image: mysql:latest
     container_name: sortirentreamis_db
     environment:
       MYSQL_DATABASE: sortirentreamis
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root1234
       MYSQL_ROOT_PASSWORD: root1234
     volumes:
       - db_data:/var/lib/mysql
