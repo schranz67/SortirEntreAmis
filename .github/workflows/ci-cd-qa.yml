@@ -39,7 +39,7 @@ jobs:
 
       # Lancement de l'environnement QA avec docker-compose
       - name: Start QA environment
-        run: docker-compose -f docker-compose.yml up -d
+        run: docker compose -f compose.yaml up -d
 
       # Attente que la base de données soit prête
       - name: Wait for database
