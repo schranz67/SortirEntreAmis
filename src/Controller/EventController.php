@@ -15,6 +15,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Twig\Template;
 
 class EventController extends AbstractController
@@ -167,13 +169,17 @@ class EventController extends AbstractController
      *
      * @return Template
      */
-    #[Route('/admin/delete_event/{id}', name: 'event_delete', methods: ['GET'])]
-    public function delete($id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
-    {
+    #[Route('/admin/delete_event/{id}', name: 'event_delete', methods: ['POST'])]
+    public function delete(Request $request, $id, EventRepository $eventRepository, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager) {
+        # Vérification du token CSRF
+        $submittedToken = $request->request->get('_token');
+        if (!$csrfTokenManager->isTokenValid(new CsrfToken('delete-event'.$id, $submittedToken))) {
+            throw $this->createAccessDeniedException('Token CSRF invalide');
+        }
         # Récupération de l'évènement
         $event = $eventRepository->find($id);
 
-        // Suppression de l'image si elle existe
+        # Suppression de l'image si elle existe
         $imageFilename = $event->getImage();
         if ($imageFilename) {
             $imagePath = $this->getParameter('events_images_directory')  . '/' . $imageFilename;
