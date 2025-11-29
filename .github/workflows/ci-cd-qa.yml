@@ -29,7 +29,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # Construire l'image Docker de l'application
+      # Construction de l'image Docker de l'application
       - name: Build Docker image
         run: docker build -t sortirentreamis .
 
@@ -44,7 +44,7 @@ jobs:
       # Attente que la base de données soit prête
       - name: Wait for database
         run: |
-          until docker exec sortirentreamis_db mysqladmin ping -h "localhost" --silent; do
+          until [ "$(docker inspect -f '{{.State.Health.Status}}' sortirentreamis_db)" = "healthy" ]; do
             echo "Waiting for database..."
             sleep 5
           done
@@ -72,4 +72,4 @@ jobs:
       # Nettoyage de l'environnement QA (optionnel)
       - name: Tear down QA environment
         if: always()
-        run: docker-compose -f docker-compose.yml down
+        run: docker compose -f compose.yaml down
