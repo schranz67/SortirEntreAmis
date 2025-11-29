@@ -1,0 +1,72 @@
+name: CI/CD QA Environment
+
+# Déclenche le pipeline sur chaque push vers la branche main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  qa-environment:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Récupération du code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Configuration de Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 3️⃣ Connexion à Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # 4️⃣ Construire l'image Docker de l'application
+      - name: Build Docker image
+        run: docker build -t sortirentreamis .
+
+      # 5️⃣ Tag pour Docker Hub
+      - name: Tag Docker image
+        run: docker tag sortirentreamis schranz67/sortirentreamis:latest
+
+      # 6️⃣ Lancer l'environnement QA avec docker-compose
+      - name: Start QA environment
+        run: docker-compose -f docker-compose.yml up -d
+
+      # 7️⃣ Attendre que la base de données soit prête
+      - name: Wait for database
+        run: |
+          until docker exec sortirentreamis_db mysqladmin ping -h "localhost" --silent; do
+            echo "Waiting for database..."
+            sleep 5
+          done
+
+      # 8️⃣ Exécuter les tests dans le conteneur
+      - name: Run tests
+        run: docker exec symfony_app sh /var/www/sortirentreamis/entrypoint.sh
+
+      # 9️⃣ Push de l'image sur Docker Hub
+      - name: Push Docker image
+        run: docker push schranz67/sortirentreamis:latest
+
+      # 🔟 Déploiement via votre orchestrateur intégré
+      - name: Deploy via orchestrator
+        run: |
+          python orchestrator.py --deploy \
+            --image schranz67/sortirentreamis:latest \
+            --env QA
+
+      # 1️⃣1️⃣ Vérification post-déploiement
+      - name: Health check
+        run: |
+          curl -f http://localhost:8025/health || exit 1
+
+      # 1️⃣2️⃣ Nettoyage de l'environnement QA (optionnel)
+      - name: Tear down QA environment
+        if: always()
+        run: docker-compose -f docker-compose.yml down
