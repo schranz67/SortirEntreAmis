@@ -11,7 +11,7 @@ for i in $(seq 1 30); do
         break
     fi
     echo "Waiting for MySQL..."
-    sleep 5
+    sleep 30
 done
 
 # Créer la base si nécessaire
