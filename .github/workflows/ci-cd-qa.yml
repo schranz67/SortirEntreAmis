@@ -48,10 +48,14 @@ jobs:
             echo "Waiting for database..."
             sleep 5
           done
-          
+        
       # Etape 8 : Exécution des tests dans le conteneur
-      - name: Run tests
-        run: docker exec symfony_app sh /var/www/sortirentreamis/entrypoint.sh
+      #- name: Run tests
+      #  run: docker exec symfony_app sh /var/www/sortirentreamis/entrypoint.sh
+
+      # Etape supplémentaire : 
+      - name: Run entrypoint
+        run: docker-compose run --rm app sh /var/www/sortirentreamis/entrypoint.sh
 
       # Etape 9 : Push de l'image sur Docker Hub
       - name: Push Docker image
