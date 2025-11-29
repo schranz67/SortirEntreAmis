@@ -32,7 +32,6 @@ jobs:
       # Etape 4 : Construction de l'image Docker de l'application
       - name: Build Docker image
         run: docker build -t sortirentreamis .
-        timeout-minutes: 20
 
       # Etape 5 : Tag pour Docker Hub
       - name: Tag Docker image
