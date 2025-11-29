@@ -4,15 +4,21 @@ set -e
 # Définir DB_HOST si non défini
 DB_HOST=${DB_HOST:-database}
 
-# Attendre MySQL (timeout de 60s)
+# Attendre MySQL (timeout de 5 minutes)
 for i in $(seq 1 30); do
     if mysqladmin ping -h"$DB_HOST" --silent; then
         echo "MySQL is ready !"
         break
     fi
     echo "Waiting for MySQL..."
-    sleep 30
+    sleep 10
 done
+
+# Installer les dépendances si nécessaires
+if [ ! -d "vendor" ]; then
+    echo "Installing PHP dependencies..."
+    composer install --no-interaction --optimize-autoloader
+fi
 
 # Créer la base si nécessaire
 echo "=== Vérification MySQL ==="
