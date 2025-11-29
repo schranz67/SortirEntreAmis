@@ -55,7 +55,7 @@ jobs:
 
       # Etape supplémentaire : 
       - name: Run entrypoint
-        run: docker-compose run --rm app sh /var/www/sortirentreamis/entrypoint.sh
+        run: docker compose run --rm app sh /var/www/sortirentreamis/entrypoint.sh
 
       # Etape 9 : Push de l'image sur Docker Hub
       - name: Push Docker image
