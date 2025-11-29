@@ -24,7 +24,7 @@ php bin/console doctrine:migrations:migrate --no-interaction
 
 # Charger les fixtures
 echo "=== Fixtures ==="
-php bin/console doctrine:fixtures:load --no-interaction --append
+php bin/console doctrine:fixtures:load --no-interaction
 
 # Installer les dépendances front et compiler les assets
 #npm install

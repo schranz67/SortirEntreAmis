@@ -26,9 +26,6 @@ COPY ./ /var/www/html
 # Configuration Apache pour Symfony
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
-# Donner les droits à Apache
-RUN chown -R www-data:www-data /var/www/html/var
-
 # Exposition du port
 EXPOSE 80
 
