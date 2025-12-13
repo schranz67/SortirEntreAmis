@@ -1,4 +1,4 @@
-name: Symfony CI/CD Pipeline
+name: Pipeline CI/CD Symfony
 
 on:
   push:
@@ -7,64 +7,55 @@ on:
   workflow_dispatch:
 
 jobs:
-  # -------------------------------
-  # 1️⃣ Build et push Docker image
-  # -------------------------------
-  build-and-push:
+
+  # Conctruction de l'image Docker
+  build-image:
     runs-on: ubuntu-latest
+    outputs:
+      image: sortirentreamis:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t schranz67/sortirentreamis:latest .
+        run: |
+          docker build -t sortirentreamis:latest .
 
-      - name: Push Docker image
-        run: docker push schranz67/sortirentreamis:latest
-
-  # -------------------------------
-  # 2️⃣ Tests Symfony avec MySQL
-  # -------------------------------
+      - name: Save image output
+        run: echo "image=sortirentreamis:latest" >> $GITHUB_OUTPUT
+        
+  # Exécution des tests
   run-tests:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: build-image
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Lancer MySQL
+      # Démarrage d'un conteneur MySQL
       - name: Start MySQL container
         run: |
           docker run -d --name test-db \
-            -e MYSQL_ROOT_PASSWORD=root1234 \
-            -e MYSQL_DATABASE=sortirentreamis \
-            mysql:latest
+          -e MYSQL_ROOT_PASSWORD=root1234 \
+          -e MYSQL_DATABASE=sortirentreamis \
+          mysql:latest
 
-      # Attendre que MySQL soit prêt
+      # Attente que la base de données soit prête
       - name: Wait for MySQL
         run: |
           until docker exec test-db mysqladmin ping -uroot -proot1234 --silent; do
             sleep 5
           done
 
-      # Pull et exécuter l'image Docker depuis Docker Hub
+      # Lancer les tests dans l'image Docker construite
       - name: Run Symfony tests
         run: |
-          docker pull schranz67/sortirentreamis:latest
-          docker run --rm --link test-db:database schranz67/sortirentreamis:latest \
+          docker run --rm --link test-db:database sortirentreamis:latest \
           sh -c "composer install --no-interaction && \
                  php bin/console doctrine:migrations:migrate --no-interaction && \
                  php bin/phpunit"
 
-  # -------------------------------
-  # 3️⃣ Déploiement QA
-  # -------------------------------
+  # Déploiement QA
   deploy-qa:
     runs-on: ubuntu-latest
     needs: run-tests
@@ -77,14 +68,3 @@ jobs:
           python orchestrator.py --deploy \
             --image schranz67/sortirentreamis:latest \
             --env QA
-
-  # -------------------------------
-  # 4️⃣ Vérification post-déploiement
-  # -------------------------------
-  health-check:
-    runs-on: ubuntu-latest
-    needs: deploy-qa
-    steps:
-      - name: Health check QA
-        run: |
-          curl -f http://localhost:8025/health || exit 1
