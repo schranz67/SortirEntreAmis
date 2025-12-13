@@ -2,13 +2,9 @@ name: CI/CD QA Environment
 
 # Déclenchement du pipeline
 on:
-  # Ici sur chaque push vers la branche main
-  push:
-    branches:
-      - main
   # Ici par déclenchement manuel depuis l'interface GitHub
   workflow_dispatch:
-
+  
 jobs:
   qa-environment:
     runs-on: ubuntu-latest
