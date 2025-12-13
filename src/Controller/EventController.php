@@ -170,7 +170,9 @@ class EventController extends AbstractController
      * @return Template
      */
     #[Route('/admin/delete_event/{id}', name: 'event_delete', methods: ['POST'])]
-    public function delete(Request $request, $id, EventRepository $eventRepository, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager) {
+    public function delete(Request $request, $id, EventRepository $eventRepository,
+                                EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager)
+    {
         # Vérification du token CSRF
         $submittedToken = $request->request->get('_token');
         if (!$csrfTokenManager->isTokenValid(new CsrfToken('delete-event'.$id, $submittedToken))) {

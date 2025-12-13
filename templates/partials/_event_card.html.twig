@@ -5,7 +5,7 @@
         <h3 class="mt-3 mb-auto fw-bold">{{ event.title }}</h3>
     {% endif %}
     <div class="mb-2 text-secondary">{{ event.category.name }}</div>
-    <div class="mb-2 text-dark">{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM')|capitalize }}</div>
+    <div class="mb-2 text-dark">{{ event.start|format_datetime(locale='fr_FR', pattern='EEEE dd MMMM - HH:mm')|capitalize }} </div>
     <div class="mb-2 text-dark">{{ event.place.name }}</div>
     <div class="mb-3 text-dark">
         {% if view %}Organisateur : {% else %}Org. :{% endif %}
