@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use App\Controller\EventController;
 use App\Entity\Category;
@@ -12,11 +12,13 @@ use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class EventControllerAddEditUnitTest extends TestCase
+class EventControllerUnitTest extends TestCase
 {
     private $eventRepository;
     private $entityManager;
@@ -120,12 +122,18 @@ class EventControllerAddEditUnitTest extends TestCase
         $user = new User();
         $this->controller->method('getUser')->willReturn($user);
         $this->controller->method('createForm')->willReturn($this->form);
-
+        $this->form->method('handleRequest')->willReturn($this->form);
         $this->form->method('isSubmitted')->willReturn(true);
         $this->form->method('isValid')->willReturn(true);
 
         $event = new Event();
         $this->form->method('getData')->willReturn($event);
+        $this->form->method('createView')->willReturn(new FormView());
+
+        // Mock du champ imageFile pour éviter l'erreur
+        $imageFileMock = $this->createMock(\Symfony\Component\Form\FormInterface::class);
+        $imageFileMock->method('getData')->willReturn(null);
+        $this->form->method('offsetGet')->with('imageFile')->willReturn($imageFileMock);
 
         // Vérifie que persist et flush sont appelés (verify)
         $this->entityManager->expects($this->once())->method('persist')->with($event);
@@ -139,7 +147,7 @@ class EventControllerAddEditUnitTest extends TestCase
             ->willReturnCallback(function ($route, $params) use (&$capturedRoute, &$capturedParams) {
                 $capturedRoute = $route;
                 $capturedParams = $params;
-                return new Response();
+                return new RedirectResponse('fake_url');
             });
 
         $request = new Request();

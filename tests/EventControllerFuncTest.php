@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use App\Entity\Category;
 use App\Entity\Event;
@@ -9,7 +9,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EventControllerFunctionalTest extends WebTestCase
+class EventControllerFuncTest extends WebTestCase
 {
     private $client;
     private $entityManager;
@@ -24,9 +24,11 @@ class EventControllerFunctionalTest extends WebTestCase
     {
         // Création d'un utilisateur
         $user = new User();
-        $user->setEmail('user@example.com');
+        $user->setEmail('user+'.uniqid().'@example.com');
         $user->setRoles(['ROLE_USER']);
         $user->setPassword('password'); // hashé si nécessaire
+        $user->setName('SCHRANZ');
+        $user->setFirstname('Pierre');
         $this->entityManager->persist($user);
 
         // Création d'une place et catégorie
