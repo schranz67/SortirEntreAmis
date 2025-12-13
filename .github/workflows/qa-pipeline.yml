@@ -1,0 +1,58 @@
+name: CI/CD Symfony
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    outputs:
+      image: sortirentreamis:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: |
+          docker build -t sortirentreamis:latest .
+      - name: Save image output
+        run: echo "image=sortirentreamis:latest" >> $GITHUB_OUTPUT
+
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - uses: actions/checkout@v3
+      - name: Start database
+        run: docker run -d --name test-db -e MYSQL_ROOT_PASSWORD=root1234 -e MYSQL_DATABASE=sortirentreamis mysql:latest
+      - name: Wait for DB
+        run: |
+          until docker exec test-db mysqladmin ping -uroot -proot1234 --silent; do sleep 5; done
+      - name: Run tests
+        run: |
+          docker run --rm --link test-db:database sortirentreamis:latest \
+          sh -c "composer install --no-interaction && php bin/console doctrine:migrations:migrate --no-interaction && php bin/phpunit"
+
+  push-image:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Tag & Push
+        run: |
+          docker tag sortirentreamis:latest schranz67/sortirentreamis:latest
+          docker push schranz67/sortirentreamis:latest
+
+  deploy-qa:
+    runs-on: ubuntu-latest
+    needs: push-image
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy QA
+        run: python orchestrator.py --deploy --image schranz67/sortirentreamis:latest --env QA
