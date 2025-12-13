@@ -53,7 +53,7 @@ jobs:
       # Lancer les tests dans l'image Docker construite
       - name: Run Symfony tests
         run: |
-          docker run --rm --link test-db:database sortirentreamis:latest \
+          docker run --rm --link test-db:database schranz67/sortirentreamis:latest \
           sh -c "composer install --no-interaction && \
                  php bin/console doctrine:migrations:migrate --no-interaction && \
                  php bin/phpunit"
