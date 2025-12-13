@@ -37,5 +37,5 @@ php bin/console doctrine:fixtures:load --no-interaction
 #npm run dev # ou npm run build pour prod
 
 # Lancer le serveur PHP interne
-echo "=== Démarrage du serveur PHP ==="
-php -S 0.0.0.0:80 -t public
+#echo "=== Démarrage du serveur PHP ==="
+#php -S 0.0.0.0:80 -t public

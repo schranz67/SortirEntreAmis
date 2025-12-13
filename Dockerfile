@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring zip intl
 
+# Installer Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 # Activation du mode rewrite
 RUN a2enmod rewrite
 
