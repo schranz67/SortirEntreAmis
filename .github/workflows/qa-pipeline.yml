@@ -1,0 +1,107 @@
+name: Symfony CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # -------------------------------
+  # 1️⃣ Build de l'image Docker
+  # -------------------------------
+  build-image:
+    runs-on: ubuntu-latest
+    outputs:
+      image: sortirentreamis:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t sortirentreamis:latest .
+
+      - name: Save image output
+        run: echo "image=sortirentreamis:latest" >> $GITHUB_OUTPUT
+
+  # -------------------------------
+  # 2️⃣ Exécution des tests
+  # -------------------------------
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: build-image
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Démarrage d'un conteneur MySQL
+      - name: Start MySQL container
+        run: |
+          docker run -d --name test-db \
+          -e MYSQL_ROOT_PASSWORD=root1234 \
+          -e MYSQL_DATABASE=sortirentreamis \
+          mysql:latest
+
+      # Attente que la base de données soit prête
+      - name: Wait for MySQL
+        run: |
+          until docker exec test-db mysqladmin ping -uroot -proot1234 --silent; do
+            sleep 5
+          done
+
+      # Lancer les tests dans l'image Docker construite
+      - name: Run Symfony tests
+        run: |
+          docker run --rm --link test-db:database schranz67/sortirentreamis:latest \
+          sh -c "composer install --no-interaction && \
+                 php bin/console doctrine:migrations:migrate --no-interaction && \
+                 php bin/phpunit"
+
+  # -------------------------------
+  # 3️⃣ Push de l'image sur Docker Hub
+  # -------------------------------
+  push-image:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Tag and Push Docker image
+        run: |
+          docker tag sortirentreamis:latest schranz67/sortirentreamis:latest
+          docker push schranz67/sortirentreamis:latest
+
+  # -------------------------------
+  # 4️⃣ Déploiement QA
+  # -------------------------------
+  deploy-qa:
+    runs-on: ubuntu-latest
+    needs: push-image
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy QA environment
+        run: |
+          python orchestrator.py --deploy \
+            --image schranz67/sortirentreamis:latest \
+            --env QA
+
+  # -------------------------------
+  # 5️⃣ Vérification post-déploiement
+  # -------------------------------
+  health-check:
+    runs-on: ubuntu-latest
+    needs: deploy-qa
+    steps:
+      - name: Health check QA
+        run: |
+          curl -f http://localhost:8025/health || exit 1
