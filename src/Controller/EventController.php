@@ -13,7 +13,9 @@ use App\Service\EventManager;
 use App\Service\FileUploadManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -29,7 +31,7 @@ class EventController extends AbstractController
      * @param EventManager $eventManager
      * @param PlaceRepository $placeRepository
      * @param CategoryRepository $categoryRepository
-     * @return Template
+     * @return Response
      */
     #[Route('/profile/list_events', name: 'events_list', methods: ['GET'])]
     public function list(Request $request, EventRepository $eventRepository, EventManager $eventManager, PlaceRepository $placeRepository, CategoryRepository $categoryRepository)
@@ -73,7 +75,7 @@ class EventController extends AbstractController
      * @param $id
      * @param EventRepository $eventRepository
      *
-     * @return Template
+     * @return Response
      */
     #[Route('/profile/detail_event/{id}', name: 'events_detail_id', methods: ['GET'])]
     public function detail_id($id, EventRepository $eventRepository)          // public function detail_id($id)
@@ -112,7 +114,7 @@ class EventController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      *
-     * @return Template
+     * @return Response
      *
      */
     #[Route('/admin/add_edit_event/{id?}', name: 'event_add_edit', methods: ['GET', 'POST'])]
@@ -167,7 +169,7 @@ class EventController extends AbstractController
      * @param EventRepository $eventRepository
      * @param EntityManagerInterface $entityManager
      *
-     * @return Template
+     * @return RedirectResponse
      */
     #[Route('/admin/delete_event/{id}', name: 'event_delete', methods: ['POST'])]
     public function delete(Request $request, $id, EventRepository $eventRepository,
@@ -205,8 +207,8 @@ class EventController extends AbstractController
      * @param EventRepository $eventRepository
      * @param EntityManagerInterface $entityManager
      *
-     * @return Template
-     */
+     * @return RedirectResponse
+      */
     #[Route('/profile/register_event/{view}_{id}', name: 'event_register', methods: ['GET'])]
     public function register_event($view, $id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
     {
@@ -240,7 +242,7 @@ class EventController extends AbstractController
      * @param EventRepository $eventRepository
      * @param EntityManagerInterface $entityManager
      *
-     * @return Template
+     * @return RedirectResponse
      */
     #[Route('/profile/unregister_event/{view}_{id}', name: 'event_unregister', methods: ['GET'])]
     public function unregister_event($view, $id, EventRepository $eventRepository, EntityManagerInterface $entityManager)
