@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Repository\EventRepository;
 use App\Service\EventManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Twig\Template;
 
 class DefaultController extends AbstractController
 {
@@ -16,7 +16,7 @@ class DefaultController extends AbstractController
      * @param EventRepository $eventRepository
      * @param EventManager $eventManager
  *
-     * @return Template
+     * @return Response
      */
     #[Route('/', name: 'default_home', methods: ['GET'])]
     public function home(EventRepository $eventRepository, EventManager $eventManager)
